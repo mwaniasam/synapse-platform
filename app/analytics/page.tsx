@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import Navigation from "@/components/navigation"
+import { Navigation } from "@/components/navigation"
 import CognitiveChart from "@/components/cognitive-chart"
 import ProductivityChart from "@/components/productivity-chart"
 

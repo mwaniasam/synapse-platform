@@ -1,218 +1,170 @@
-import { Matrix } from "ml-matrix"
-import nlp from "compromise"
-
 export interface CognitiveState {
-  state: "focused" | "receptive" | "distracted" | "fatigued"
-  confidence: number
-  factors: string[]
-  timestamp: number
+  focus: number;
+  engagement: number;
+  comprehension: number;
+  fatigue: number;
+  confidence: number;
+  timestamp: Date;
 }
 
-export interface InteractionData {
-  type: string
-  timestamp: number
-  duration?: number
-  element?: string
-  coordinates?: { x: number; y: number }
-  metadata?: any
+export interface LearningMetrics {
+  sessionDuration: number;
+  conceptsLearned: number;
+  questionsAnswered: number;
+  correctAnswers: number;
+  timeSpentReading: number;
+  interactionFrequency: number;
 }
 
 export class CognitiveEngine {
-  private interactionHistory: InteractionData[] = []
-  private cognitiveModel: Matrix | null = null
+  private static instance: CognitiveEngine;
 
-  constructor() {
-    this.initializeModel()
-  }
-
-  private initializeModel() {
-    // Initialize a simple cognitive state prediction model
-    // In production, this would be a trained ML model
-    this.cognitiveModel = new Matrix([
-      [0.8, 0.1, 0.05, 0.05], // focused
-      [0.2, 0.6, 0.15, 0.05], // receptive
-      [0.1, 0.2, 0.6, 0.1], // distracted
-      [0.05, 0.1, 0.25, 0.6], // fatigued
-    ])
-  }
-
-  addInteraction(interaction: InteractionData) {
-    this.interactionHistory.push(interaction)
-
-    // Keep only last 100 interactions for performance
-    if (this.interactionHistory.length > 100) {
-      this.interactionHistory = this.interactionHistory.slice(-100)
+  public static getInstance(): CognitiveEngine {
+    if (!CognitiveEngine.instance) {
+      CognitiveEngine.instance = new CognitiveEngine();
     }
+    return CognitiveEngine.instance;
   }
 
-  detectCognitiveState(): CognitiveState {
-    if (this.interactionHistory.length === 0) {
-      return {
-        state: "focused",
-        confidence: 0.5,
-        factors: ["no_data"],
-        timestamp: Date.now(),
-      }
-    }
-
-    const recentInteractions = this.interactionHistory.slice(-20)
-    const features = this.extractFeatures(recentInteractions)
-
-    return this.classifyState(features)
-  }
-
-  private extractFeatures(interactions: InteractionData[]) {
-    const now = Date.now()
-    const timeWindow = 60000 // 1 minute
-
-    const recentInteractions = interactions.filter((i) => now - i.timestamp < timeWindow)
-
-    // Feature extraction
-    const interactionRate = recentInteractions.length / (timeWindow / 1000)
-    const avgDuration =
-      recentInteractions.reduce((sum, i) => sum + (i.duration || 0), 0) / recentInteractions.length || 0
-    const scrollRate = recentInteractions.filter((i) => i.type === "scroll").length
-    const clickRate = recentInteractions.filter((i) => i.type === "click").length
-    const readingTime = recentInteractions
-      .filter((i) => i.type === "read")
-      .reduce((sum, i) => sum + (i.duration || 0), 0)
+  public analyzeCognitiveState(metrics: LearningMetrics): CognitiveState {
+    const focus = this.calculateFocus(metrics);
+    const engagement = this.calculateEngagement(metrics);
+    const comprehension = this.calculateComprehension(metrics);
+    const fatigue = this.calculateFatigue(metrics);
+    const confidence = this.calculateConfidence(metrics);
 
     return {
-      interactionRate,
-      avgDuration,
-      scrollRate,
-      clickRate,
-      readingTime,
-      pauseCount: recentInteractions.filter((i) => i.type === "pause").length,
-    }
-  }
-
-  private classifyState(features: any): CognitiveState {
-    const { interactionRate, avgDuration, scrollRate, clickRate, readingTime, pauseCount } = features
-
-    let state: CognitiveState["state"] = "focused"
-    let confidence = 0.5
-    const factors: string[] = []
-
-    // Simple rule-based classification
-    // In production, this would use the trained ML model
-
-    if (readingTime > 30000 && scrollRate < 5 && pauseCount < 2) {
-      state = "focused"
-      confidence = 0.85
-      factors.push("sustained_reading", "minimal_scrolling", "few_pauses")
-    } else if (interactionRate > 0.5 && avgDuration > 1000) {
-      state = "receptive"
-      confidence = 0.75
-      factors.push("moderate_interaction", "good_engagement")
-    } else if (scrollRate > 10 || clickRate > 8) {
-      state = "distracted"
-      confidence = 0.8
-      factors.push("excessive_scrolling", "rapid_clicking")
-    } else if (interactionRate < 0.1 || pauseCount > 5) {
-      state = "fatigued"
-      confidence = 0.7
-      factors.push("low_interaction", "frequent_pauses")
-    }
-
-    return {
-      state,
+      focus,
+      engagement,
+      comprehension,
+      fatigue,
       confidence,
-      factors,
-      timestamp: Date.now(),
-    }
+      timestamp: new Date(),
+    };
   }
 
-  analyzeContent(content: string) {
-    const doc = nlp(content)
-
-    return {
-      wordCount: doc.wordCount(),
-      sentences: doc.sentences().length,
-      complexity: this.calculateComplexity(doc),
-      keyTerms: this.extractKeyTerms(doc),
-      readingTime: this.estimateReadingTime(doc.wordCount()),
-      topics: this.extractTopics(doc),
-    }
+  private calculateFocus(metrics: LearningMetrics): number {
+    const focusScore = Math.min(100, (metrics.interactionFrequency / metrics.sessionDuration) * 100);
+    return Math.max(0, focusScore);
   }
 
-  private calculateComplexity(doc: any): number {
-    const avgWordsPerSentence = doc.wordCount() / doc.sentences().length
-    const complexWords = doc.match("#Adjective").length + doc.match("#Adverb").length
-
-    // Simple complexity score (0-1)
-    return Math.min(1, (avgWordsPerSentence / 20 + complexWords / doc.wordCount()) / 2)
+  private calculateEngagement(metrics: LearningMetrics): number {
+    const engagementScore = (metrics.questionsAnswered / Math.max(1, metrics.sessionDuration / 60)) * 20;
+    return Math.min(100, Math.max(0, engagementScore));
   }
 
-  private extractKeyTerms(doc: any): string[] {
-    return doc.match("#Noun").unique().out("array").slice(0, 10)
+  private calculateComprehension(metrics: LearningMetrics): number {
+    if (metrics.questionsAnswered === 0) return 50;
+    const comprehensionScore = (metrics.correctAnswers / metrics.questionsAnswered) * 100;
+    return Math.max(0, comprehensionScore);
   }
 
-  private estimateReadingTime(wordCount: number): number {
-    // Average reading speed: 200-250 words per minute
-    return Math.ceil(wordCount / 225) * 60 * 1000 // milliseconds
+  private calculateFatigue(metrics: LearningMetrics): number {
+    const fatigueScore = Math.min(100, (metrics.sessionDuration / 3600) * 30);
+    return Math.max(0, fatigueScore);
   }
 
-  private extractTopics(doc: any): string[] {
-    const topics = []
-
-    // Extract potential topics from nouns and noun phrases
-    const nouns = doc.match("#Noun").out("array")
-    const phrases = doc.match("#Noun #Noun").out("array")
-
-    return [...new Set([...nouns, ...phrases])].slice(0, 5)
+  private calculateConfidence(metrics: LearningMetrics): number {
+    const accuracyRate = metrics.questionsAnswered > 0 ? metrics.correctAnswers / metrics.questionsAnswered : 0.5;
+    const confidenceScore = accuracyRate * 100;
+    return Math.max(0, Math.min(100, confidenceScore));
   }
 
-  generateAdaptations(cognitiveState: CognitiveState, content: any) {
-    const adaptations = []
+  public generateRecommendations(cognitiveState: CognitiveState): string[] {
+    const recommendations: string[] = [];
 
-    switch (cognitiveState.state) {
-      case "focused":
-        adaptations.push({
-          type: "highlight",
-          target: "key_terms",
-          intensity: 0.3,
-        })
-        break
-
-      case "receptive":
-        adaptations.push({
-          type: "font_size",
-          value: "+2px",
-        })
-        break
-
-      case "distracted":
-        adaptations.push(
-          {
-            type: "simplify",
-            target: "complex_sentences",
-          },
-          {
-            type: "visual_cues",
-            target: "important_sections",
-          },
-        )
-        break
-
-      case "fatigued":
-        adaptations.push(
-          {
-            type: "break_reminder",
-            message: "Consider taking a short break",
-          },
-          {
-            type: "font_size",
-            value: "+4px",
-          },
-          {
-            type: "line_height",
-            value: "1.8",
-          },
-        )
-        break
+    if (cognitiveState.focus < 50) {
+      recommendations.push("Take a 5-minute break to improve focus");
+      recommendations.push("Try the Pomodoro technique for better concentration");
     }
 
-    return adaptations
+    if (cognitiveState.engagement < 40) {
+      recommendations.push("Switch to more interactive content");
+      recommendations.push("Try gamified learning exercises");
+    }
+
+    if (cognitiveState.comprehension < 60) {
+      recommendations.push("Review previous concepts before continuing");
+      recommendations.push("Try explaining concepts in your own words");
+    }
+
+    if (cognitiveState.fatigue > 70) {
+      recommendations.push("Take a longer break (15-30 minutes)");
+      recommendations.push("Consider ending the session and resuming later");
+    }
+
+    if (cognitiveState.confidence < 50) {
+      recommendations.push("Practice with easier exercises first");
+      recommendations.push("Seek additional resources or help");
+    }
+
+    return recommendations;
+  }
+
+  public adaptContent(cognitiveState: CognitiveState, content: any): any {
+    const adaptedContent = { ...content };
+
+    if (cognitiveState.comprehension < 60) {
+      adaptedContent.difficulty = 'easy';
+      adaptedContent.explanationLevel = 'detailed';
+    } else if (cognitiveState.comprehension > 80) {
+      adaptedContent.difficulty = 'hard';
+      adaptedContent.explanationLevel = 'concise';
+    }
+
+    if (cognitiveState.focus < 50) {
+      adaptedContent.format = 'interactive';
+      adaptedContent.chunkSize = 'small';
+    }
+
+    if (cognitiveState.fatigue > 60) {
+      adaptedContent.sessionLength = 'short';
+      adaptedContent.breakReminders = true;
+    }
+
+    return adaptedContent;
+  }
+
+  public processNaturalLanguage(text: string): { concepts: string[]; sentiment: string; complexity: number } {
+    // Simple NLP processing without external libraries
+    const words = text.toLowerCase().split(/\s+/);
+    const concepts = this.extractConcepts(words);
+    const sentiment = this.analyzeSentiment(words);
+    const complexity = this.calculateComplexity(text);
+
+    return { concepts, sentiment, complexity };
+  }
+
+  private extractConcepts(words: string[]): string[] {
+    const conceptKeywords = [
+      'algorithm', 'data', 'structure', 'function', 'variable', 'loop', 'condition',
+      'machine', 'learning', 'neural', 'network', 'artificial', 'intelligence',
+      'programming', 'code', 'software', 'development', 'computer', 'science'
+    ];
+
+    return words.filter(word => conceptKeywords.includes(word));
+  }
+
+  private analyzeSentiment(words: string[]): string {
+    const positiveWords = ['good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic'];
+    const negativeWords = ['bad', 'terrible', 'awful', 'horrible', 'difficult', 'hard'];
+
+    const positiveCount = words.filter(word => positiveWords.includes(word)).length;
+    const negativeCount = words.filter(word => negativeWords.includes(word)).length;
+
+    if (positiveCount > negativeCount) return 'positive';
+    if (negativeCount > positiveCount) return 'negative';
+    return 'neutral';
+  }
+
+  private calculateComplexity(text: string): number {
+    const sentences = text.split(/[.!?]+/).length;
+    const words = text.split(/\s+/).length;
+    const avgWordsPerSentence = words / sentences;
+    
+    // Simple complexity score based on sentence length
+    return Math.min(100, Math.max(0, (avgWordsPerSentence - 10) * 5));
   }
 }
+
+export const cognitiveEngine = CognitiveEngine.getInstance();

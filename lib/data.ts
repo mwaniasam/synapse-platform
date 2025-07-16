@@ -1,315 +1,174 @@
-import "server-only";
 import { prisma } from "@/lib/db";
 import { unstable_noStore as noStore } from "next/cache";
 import bcrypt from "bcryptjs";
 
-// Create a new user
-export async function createUser(data: { email: string; password: string; name?: string }) {
+export async function fetchPracticeData(userId: string) {
+  noStore();
   try {
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const user = await prisma.user.create({
-      data: {
-        email: data.email,
-        passwordHash: hashedPassword,
-        name: data.name,
-      },
+    const practiceSessions = await prisma.learningSession.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: 5, // Fetching 5 recent sessions for practice
     });
-    return user;
+    return practiceSessions;
   } catch (error) {
-    console.error("Failed to create user:", error);
-    throw new Error("Failed to create user.");
+    console.error("Failed to fetch practice data:", error);
+    return [];
   }
 }
 
-export async function getUserById(id: number) {
+// --- NEW FUNCTION: fetchProgressData ---
+// This function was also missing. It's needed by your /progress page.
+// This placeholder fetches recent analytics data to show user progress.
+export async function fetchProgressData(userId: string) {
   noStore();
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        createdAt: true,
-        updatedAt: true,
-      },
+    const progressAnalytics = await prisma.analytics.findMany({
+      where: { userId },
+      orderBy: { date: 'desc' },
+      take: 30, // Fetching the last 30 data points for a progress chart
     });
-    return user;
+    return progressAnalytics;
   } catch (error) {
-    console.error("Failed to fetch user:", error);
-    throw new Error("Failed to fetch user.");
+    console.error("Failed to fetch progress data:", error);
+    return [];
   }
 }
+
+
+// --- Existing User Functions ---
 
 export async function getUserByEmail(email: string) {
   noStore();
   try {
     const user = await prisma.user.findUnique({
       where: { email },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        passwordHash: true,
-        createdAt: true,
-        updatedAt: true,
+    });
+    return user;
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    return null;
+  }
+}
+
+export async function getUserById(id: string) {
+  noStore();
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id },
+    });
+    return user;
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+    return null;
+  }
+}
+
+export async function createUser(email: string, password: string, name: string) {
+  try {
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
       },
     });
     return user;
   } catch (error) {
-    console.error("Failed to fetch user by email:", error);
-    throw new Error("Failed to fetch user by email.");
+    console.error("Failed to create user:", error);
+    return null;
   }
 }
 
-// Placeholder for fetching dashboard data
-export async function fetchDashboardData(userId: number) {
+export async function verifyPassword(password: string, hashedPassword: string) {
+  return bcrypt.compare(password, hashedPassword);
+}
+
+
+// --- Existing Data Fetching Functions ---
+
+export async function getSessionsByUserId(userId: string) {
   noStore();
   try {
-    // Simulate fetching data
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const data = {
-      overallProgress: 75,
-      masteryScore: 88,
-      completedModules: 12,
-      totalModules: 15,
-      focusLevel: 85,
-      energyLevel: 70,
-      comprehension: 90,
-      engagement: 75,
-      recentSessions: [
-        {
-          id: "1",
-          date: "2024-07-10",
-          duration: "45 min",
-          topic: "AI Fundamentals",
-          performance: "Excellent" as const,
-        },
-        {
-          id: "2",
-          date: "2024-07-08",
-          duration: "60 min",
-          topic: "Machine Learning Basics",
-          performance: "Good" as const,
-        },
-        {
-          id: "3",
-          date: "2024-07-05",
-          duration: "30 min",
-          topic: "Neural Networks",
-          performance: "Average" as const,
-        },
-      ],
-      cognitiveTrends: [
-        { name: "Week 1", focus: 70, energy: 60, comprehension: 75, engagement: 65 },
-        { name: "Week 2", focus: 75, energy: 65, comprehension: 80, engagement: 70 },
-        { name: "Week 3", focus: 80, energy: 70, comprehension: 85, engagement: 75 },
-        { name: "Week 4", focus: 85, energy: 75, comprehension: 90, engagement: 80 },
-      ],
-      aiInsights: [
-        "Your focus levels are consistently high during morning sessions.",
-        "Consider reviewing 'Data Preprocessing' as comprehension dipped in recent quizzes.",
-        "Increased engagement observed when interactive exercises are present.",
-      ],
-      aiRecommendations: [
-        {
-          id: "rec1",
-          title: "Advanced Deep Learning Course",
-          type: "course",
-          description: "Dive deeper into neural network architectures.",
-        },
-        {
-          id: "rec2",
-          title: "Reinforcement Learning Basics",
-          type: "topic",
-          description: "Explore how agents learn through trial and error.",
-        },
-        {
-          id: "rec3",
-          title: "Interactive Python Notebooks",
-          type: "resource",
-          description: "Hands-on coding exercises for practical application.",
-        },
-      ],
-    };
-    return data;
+    const sessions = await prisma.learningSession.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+    });
+    return sessions;
   } catch (error) {
-    console.error("Failed to fetch dashboard data:", error);
-    throw new Error("Failed to fetch dashboard data.");
+    console.error("Failed to fetch sessions:", error);
+    return [];
   }
 }
 
-// Placeholder for fetching learning data
-export async function fetchLearningData(userId: number) {
+export async function getCognitiveStateByUserId(userId: string) {
   noStore();
   try {
-    // Simulate fetching data
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const data = {
-      learningPath: [
-        {
-          id: "step1",
-          title: "Introduction to AI",
-          description: "Understand the basics of Artificial Intelligence.",
-          status: "completed" as const,
-        },
-        {
-          id: "step2",
-          title: "Machine Learning Fundamentals",
-          description: "Learn core ML algorithms and concepts.",
-          status: "in-progress" as const,
-        },
-        {
-          id: "step3",
-          title: "Deep Learning Architectures",
-          description: "Explore neural networks and their applications.",
-          status: "upcoming" as const,
-        },
-        {
-          id: "step4",
-          title: "Natural Language Processing",
-          description: "Dive into how AI understands human language.",
-          status: "upcoming" as const,
-        },
-      ],
-      coreConcepts: [
-        { id: "c1", title: "Supervised Learning", status: "mastered" as const },
-        { id: "c2", title: "Unsupervised Learning", status: "review" as const },
-        { id: "c3", title: "Reinforcement Learning", status: "new" as const },
-        { id: "c4", title: "Neural Networks", status: "mastered" as const },
-        { id: "c5", title: "Data Preprocessing", status: "review" as const },
-        { id: "c6", title: "Model Evaluation", status: "mastered" as const },
-      ],
-      interactiveGraph: {
-        nodesCount: 50,
-        edgesCount: 120,
-      },
-      adaptiveContent: [
-        {
-          id: "ac1",
-          title: "ML Basics: Linear Regression",
-          type: "text" as const,
-          content:
-            "Linear regression is a fundamental algorithm in machine learning that models the relationship between a dependent variable and one or more independent variables by fitting a linear equation to observed data. It is widely used for predictive analysis.",
-        },
-        {
-          id: "ac2",
-          title: "Video: Gradient Descent Explained",
-          type: "video" as const,
-          content: "https://www.youtube.com/watch?v=L-g7p3Wb_2U",
-        },
-        {
-          id: "ac3",
-          title: "Quiz: Supervised Learning",
-          type: "quiz" as const,
-          content:
-            "What is the primary goal of supervised learning? A) Clustering data B) Predicting outcomes based on labeled data C) Discovering hidden patterns D) Reducing dimensionality",
-        },
-      ],
-    };
-    return data;
+    const cognitiveState = await prisma.cognitiveState.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+    });
+    return cognitiveState;
   } catch (error) {
-    console.error("Failed to fetch learning data:", error);
-    throw new Error("Failed to fetch learning data.");
+    console.error("Failed to fetch cognitive state:", error);
+    return null;
   }
 }
 
-// Placeholder for fetching practice data
-export async function fetchPracticeData(userId: number) {
+export async function getKnowledgeGraphByUserId(userId: string) {
   noStore();
   try {
-    // Simulate fetching data
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const data = {
-      sessionControls: {
-        onStart: () => console.log("Session started"),
-        onPause: () => console.log("Session paused"),
-        onReset: () => console.log("Session reset"),
-        onEndSession: () => console.log("Session ended"),
-      },
-      cognitiveStateMonitor: {
-        focusLevel: 75,
-        energyLevel: 60,
-        comprehension: 80,
-        engagement: 70,
-      },
-      cognitiveStateFeedback: {
-        feedback: "You're doing great! Keep up the focus. Consider taking a short break if your energy dips.",
-        trend: "improving" as const,
-      },
-    };
-    return data;
+    const knowledgeNodes = await prisma.knowledgeNode.findMany({
+      where: { userId },
+      orderBy: { frequency: 'desc' },
+    });
+    return knowledgeNodes;
   } catch (error) {
-    console.error("Failed to fetch practice data:", error);
-    throw new Error("Failed to fetch practice data.");
+    console.error("Failed to fetch knowledge graph:", error);
+    return [];
   }
 }
 
-// Placeholder for fetching progress data
-export async function fetchProgressData(userId: number) {
+export async function getAnalyticsByUserId(userId: string) {
   noStore();
   try {
-    // Simulate fetching data
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const data = {
-      progressOverview: {
-        overallProgress: 75,
-        masteryScore: 88,
-        completedModules: 12,
-        totalModules: 15,
-      },
-      learningAnalytics: {
-        timeSpent: [
-          { topic: "AI Fundamentals", hours: 25 },
-          { topic: "Machine Learning", hours: 40 },
-          { topic: "Deep Learning", hours: 30 },
-          { topic: "NLP", hours: 15 },
-        ],
-        quizScores: [
-          { topic: "AI Fundamentals", score: 92 },
-          { topic: "Machine Learning", score: 85 },
-          { topic: "Deep Learning", score: 78 },
-          { topic: "NLP", score: 90 },
-        ],
-      },
-      skillsRadarChart: {
-        skills: [
-          { skill: "Problem Solving", level: 85 },
-          { skill: "Critical Thinking", level: 70 },
-          { skill: "Data Analysis", level: 90 },
-          { skill: "Algorithm Design", level: 75 },
-          { skill: "Communication", level: 80 },
-        ],
-      },
-    };
-    return data;
+    const analytics = await prisma.analytics.findMany({
+      where: { userId },
+      orderBy: { date: 'desc' },
+      take: 30,
+    });
+    return analytics;
   } catch (error) {
-    console.error("Failed to fetch progress data:", error);
-    throw new Error("Failed to fetch progress data.");
+    console.error("Failed to fetch analytics:", error);
+    return [];
   }
 }
 
-// Placeholder for fetching settings data
-export async function fetchSettingsData(userId: number) {
+export async function getUserPreferences(userId: string) {
   noStore();
   try {
-    // Simulate fetching data
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    const data = {
-      initialName: "John Doe",
-      initialEmail: "john.doe@example.com",
-      initialLearningStyle: "visual",
-    };
-    return data;
+    const preferences = await prisma.userPreferences.findUnique({
+      where: { userId },
+    });
+    return preferences;
   } catch (error) {
-    console.error("Failed to fetch settings data:", error);
-    throw new Error("Failed to fetch settings data.");
+    console.error("Failed to fetch user preferences:", error);
+    return null;
+  }
+}
+
+export async function updateUserPreferences(userId: string, preferences: any) {
+  try {
+    const updated = await prisma.userPreferences.upsert({
+      where: { userId },
+      update: preferences,
+      create: { userId, ...preferences },
+    });
+    return updated;
+  } catch (error) {
+    console.error("Failed to update preferences:", error);
+    return null;
   }
 }

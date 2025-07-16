@@ -1,18 +1,9 @@
-import { PrismaClient } from "@prisma/client"
+import { PrismaClient } from '@prisma/client'
 
-// This is a singleton pattern to prevent multiple instances of PrismaClient
-// in development, which can lead to issues like "too many connections".
-declare global {
-  // eslint-disable-next-line no-var
-  var prismaInstance: PrismaClient | undefined
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
 }
 
-export const prisma =
-  global.prismaInstance ||
-  new PrismaClient({
-    log: process.env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-  })
+export const prisma = globalForPrisma.prisma ?? new PrismaClient()
 
-if (process.env.NODE_ENV !== "production") {
-  global.prismaInstance = prisma
-}
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
