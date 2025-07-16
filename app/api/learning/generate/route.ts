@@ -24,10 +24,12 @@ export async function POST(request: NextRequest) {
     // Save learning session
     const session_record = await prisma.focusSession.create({
       data: {
-        userId: session.user.id,
+        userId: parseInt(session.user.id),
         topic,
         content: content as any,
-        cognitiveData: cognitiveState ? { state: cognitiveState } : null,
+        sessionData: {}, // Add default or relevant session data here
+        duration: 0, // Duration can be set later or calculated based on content length
+        performance: "not_assessed", // Initial performance state
       },
     })
 
