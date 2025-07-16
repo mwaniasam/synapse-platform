@@ -58,6 +58,8 @@ model VerificationToken {
 model FocusSession {
   id          Int    @id @default(autoincrement())
   userId      Int
+  content     Json
+  sessionData     Json
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   duration    Int
   topic       String
