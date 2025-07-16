@@ -3,26 +3,26 @@
 import type React from "react"
 
 import { useState } from "react"
-import { signIn } from "next-auth/react"
+import { signIn, getSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Brain, Eye, EyeOff } from "lucide-react"
-import Link from "next/link"
-import toast from "react-hot-toast"
+import { Brain, Loader2, Mail } from "lucide-react"
 
-export default function SignInPage() {
+export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [showPassword, setShowPassword] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
+    setLoading(true)
+    setError("")
 
     try {
       const result = await signIn("credentials", {
@@ -32,60 +32,35 @@ export default function SignInPage() {
       })
 
       if (result?.error) {
-        toast.error("Invalid credentials. Please try again.")
+        setError("Invalid credentials. Please try again.")
       } else {
-        toast.success("Welcome back!")
-        router.push("/")
-        router.refresh()
+        const session = await getSession()
+        if (session) {
+          router.push("/dashboard")
+        }
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.")
+      setError("An error occurred. Please try again.")
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  const handleDemoLogin = async () => {
-    setIsLoading(true)
-    setEmail("demo@synapse.com")
-    setPassword("demo123")
-
-    try {
-      const result = await signIn("credentials", {
-        email: "demo@synapse.com",
-        password: "demo123",
-        redirect: false,
-      })
-
-      if (result?.error) {
-        toast.error("Demo account not available. Please create an account.")
-      } else {
-        toast.success("Welcome to the demo!")
-        router.push("/")
-        router.refresh()
-      }
-    } catch (error) {
-      toast.error("Demo login failed. Please try again.")
-    } finally {
-      setIsLoading(false)
-    }
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: "/dashboard" })
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="flex items-center justify-center space-x-2 mb-4">
-            <Brain className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Synapse
-            </span>
+          <div className="flex justify-center mb-4">
+            <Brain className="h-12 w-12 text-blue-600" />
           </div>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>Sign in to your account to continue your cognitive enhancement journey</CardDescription>
+          <CardTitle className="text-2xl">Welcome Back</CardTitle>
+          <CardDescription>Sign in to continue your learning journey</CardDescription>
         </CardHeader>
-
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -96,37 +71,29 @@ export default function SignInPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                disabled={isLoading}
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-              </div>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
             </div>
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
+            {error && <div className="text-sm text-red-600 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">{error}</div>}
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Signing In...
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
 
@@ -135,17 +102,18 @@ export default function SignInPage() {
               <span className="w-full border-t" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">Or</span>
+              <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
             </div>
           </div>
 
-          <Button variant="outline" className="w-full bg-transparent" onClick={handleDemoLogin} disabled={isLoading}>
-            Try Demo Account
+          <Button variant="outline" className="w-full bg-transparent" onClick={handleGoogleSignIn}>
+            <Mail className="mr-2 h-4 w-4" />
+            Google
           </Button>
 
           <div className="text-center text-sm">
-            <span className="text-muted-foreground">Don't have an account? </span>
-            <Link href="/auth/signup" className="text-primary hover:underline">
+            Don't have an account?{" "}
+            <Link href="/auth/signup" className="text-blue-600 hover:underline">
               Sign up
             </Link>
           </div>

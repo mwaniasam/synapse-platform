@@ -1,68 +1,172 @@
-# Synapse - Cognitive Learning Acceleration Platform
+# 🧠 Synapse Learning Pro
 
-A comprehensive productivity and learning platform with Pomodoro timer, activity tracking, and analytics.
+A modern, AI-powered adaptive learning platform that uses cognitive state detection to personalize your learning experience in real-time.
 
-## Features
+## ✨ Features
 
-- 🍅 **Pomodoro Timer** - Focus sessions with customizable work/break intervals
-- 📊 **Activity Tracking** - Real-time monitoring of user activity and focus
-- 📈 **Analytics Dashboard** - Detailed insights into productivity patterns
-- 🔐 **Authentication** - Secure user accounts with NextAuth.js
-- 🎨 **Modern UI** - Beautiful, responsive design with Tailwind CSS
-- 🌙 **Dark Mode** - System-aware theme switching
+- **🤖 AI-Powered Content Generation**: GPT-4 creates personalized learning content based on your level and interests
+- **🧠 Cognitive State Detection**: Real-time monitoring of focus, attention, and learning patterns
+- **🎯 Adaptive Learning**: Content automatically adjusts difficulty and presentation based on your cognitive state
+- **📊 Learning Analytics**: Detailed insights into your learning patterns and progress
+- **🔐 Secure Authentication**: NextAuth with Google OAuth and credentials support
+- **📱 Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **🌙 Dark Mode**: Beautiful dark/light theme support
 
-## Tech Stack
-
-- **Frontend**: Next.js 14, React 18, TypeScript
-- **Backend**: Next.js API Routes, Prisma ORM
-- **Database**: PostgreSQL
-- **Authentication**: NextAuth.js
-- **Styling**: Tailwind CSS, Radix UI
-- **Charts**: Recharts
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ 
-- PostgreSQL database
-- npm or yarn
+- Node.js 18 or higher
+- A Neon database (free tier available)
+- OpenAI API key
+- Google OAuth credentials (optional)
 
 ### Installation
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables (see .env.example)
-4. Set up the database: `npx prisma db push`
-5. Start the development server: `npm run dev`
+1. **Clone the repository**
+   \`\`\`bash
+   git clone <your-repo-url>
+   cd synapse-learning-pro
+   \`\`\`
 
-### Environment Variables
+2. **Install dependencies**
+   \`\`\`bash
+   npm install
+   \`\`\`
 
-Create a `.env.local` file with:
+3. **Set up environment variables**
+   \`\`\`bash
+   cp .env.example .env.local
+   \`\`\`
+   
+   Fill in your environment variables:
+   - `DATABASE_URL`: Your Neon database connection string
+   - `NEXTAUTH_SECRET`: Generate with `openssl rand -base64 32`
+   - `OPENAI_API_KEY`: Get from [OpenAI Platform](https://platform.openai.com/api-keys)
+   - `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`: Get from [Google Cloud Console](https://console.cloud.google.com)
+
+4. **Set up the database**
+   \`\`\`bash
+   npm run db:push
+   \`\`\`
+
+5. **Start the development server**
+   \`\`\`bash
+   npm run dev
+   \`\`\`
+
+6. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 🛠️ Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run db:push` - Push database schema changes
+- `npm run db:generate` - Generate Prisma client
+- `npm run db:studio` - Open Prisma Studio
+
+## 🏗️ Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: NextAuth.js
+- **AI**: OpenAI GPT-4 with Vercel AI SDK
+- **Styling**: Tailwind CSS + shadcn/ui
+- **Animations**: Framer Motion
+- **Deployment**: Vercel (recommended)
+
+## 📁 Project Structure
 
 \`\`\`
-DATABASE_URL="postgresql://username:password@localhost:5432/synapse"
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-here"
+synapse-learning-pro/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   ├── auth/              # Authentication pages
+│   ├── dashboard/         # Dashboard page
+│   └── learn/             # Learning interface
+├── components/            # React components
+│   ├── ui/               # shadcn/ui components
+│   └── ...               # Custom components
+├── lib/                  # Utility libraries
+│   ├── auth.ts           # NextAuth configuration
+│   ├── prisma.ts         # Database client
+│   └── ai-engine.ts      # AI content generation
+├── prisma/               # Database schema
+└── public/               # Static assets
 \`\`\`
 
-## Usage
+## 🔧 Configuration
 
-1. Sign up for an account
-2. Start a Pomodoro session
-3. Track your activity across websites
-4. View analytics and insights
-5. Customize settings to your preferences
+### Database Setup (Neon)
 
-## Deployment
+1. Create a free account at [Neon](https://neon.tech)
+2. Create a new database
+3. Copy the connection string to your `.env.local`
+4. Run `npm run db:push` to create tables
 
-Deploy to Vercel with one click or follow these steps:
+### OpenAI Setup
 
-1. Set up a PostgreSQL database (Neon, Supabase, etc.)
-2. Configure environment variables
-3. Deploy to your preferred platform
-4. Run database migrations: `npx prisma db push`
+1. Get an API key from [OpenAI Platform](https://platform.openai.com/api-keys)
+2. Add it to your `.env.local` as `OPENAI_API_KEY`
 
-## License
+### Google OAuth (Optional)
 
-MIT License - see LICENSE file for details.
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project or select existing
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URI: `http://localhost:3000/api/auth/callback/google`
+6. Add client ID and secret to `.env.local`
+
+## 🚀 Deployment
+
+### Deploy to Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard
+4. Deploy!
+
+### Environment Variables for Production
+
+Make sure to set these in your production environment:
+- `DATABASE_URL`
+- `NEXTAUTH_URL` (your production URL)
+- `NEXTAUTH_SECRET`
+- `OPENAI_API_KEY`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+If you encounter any issues:
+
+1. Check the [Issues](https://github.com/your-username/synapse-learning-pro/issues) page
+2. Create a new issue with detailed information
+3. Join our [Discord community](https://discord.gg/your-invite) for help
+
+## 🙏 Acknowledgments
+
+- [Vercel](https://vercel.com) for the amazing platform and AI SDK
+- [OpenAI](https://openai.com) for GPT-4 API
+- [shadcn/ui](https://ui.shadcn.com) for beautiful components
+- [Neon](https://neon.tech) for serverless PostgreSQL
+
+---
+
+Made with ❤️ by the Synapse Learning Pro
+\`\`\`
