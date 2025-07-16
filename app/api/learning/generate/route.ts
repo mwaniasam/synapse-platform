@@ -27,9 +27,9 @@ export async function POST(request: NextRequest) {
         userId: parseInt(session.user.id),
         topic,
         content: content as any,
-        sessionData: {}, // Add default or relevant session data here
-        duration: 0, // Duration can be set later or calculated based on content length
-        performance: "not_assessed", // Initial performance state
+        sessionData: {}, 
+        duration: 0,
+        performance: "not_assessed",
       },
     })
 
