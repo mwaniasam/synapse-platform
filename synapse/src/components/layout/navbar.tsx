@@ -1,17 +1,18 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useSession, signOut } from "next-auth/react"
-import { AppBar, Toolbar, Typography, Button, Avatar, Menu, MenuItem, IconButton, Box } from "@mui/material"
-import { Dashboard, Settings, ExitToApp } from "@mui/icons-material"
+import { AppBar, Toolbar, Typography, Button, Avatar, Menu, MenuItem, IconButton, Box, Tooltip } from "@mui/material"
+import { Dashboard, Settings, ExitToApp, DarkMode, LightMode, Psychology } from "@mui/icons-material"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useTheme } from "@/components/providers/theme-provider"
 
 export function Navbar() {
   const { data: session } = useSession()
   const router = useRouter()
+  const { darkMode, toggleDarkMode } = useTheme()
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -28,13 +29,20 @@ export function Navbar() {
   }
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" elevation={1}>
       <Toolbar>
+        <Psychology sx={{ mr: 1 }} />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
             Synapse
           </Link>
         </Typography>
+
+        <Tooltip title={darkMode ? "Switch to light mode" : "Switch to dark mode"}>
+          <IconButton color="inherit" onClick={toggleDarkMode}>
+            {darkMode ? <LightMode /> : <DarkMode />}
+          </IconButton>
+        </Tooltip>
 
         {session ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
