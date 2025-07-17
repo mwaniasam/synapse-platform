@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Remove deprecated experimental options
   experimental: {
-    appDir: true,
-    optimizeCss: true,
-    scrollRestoration: true,
+    // Remove appDir as it's now stable in Next.js 14
+    // Remove optimizeCss as it's causing the critters error
   },
+
   // Enable SWC minification for better performance
   swcMinify: true,
 
@@ -14,7 +15,7 @@ const nextConfig = {
       "lh3.googleusercontent.com", // Google profile images
       "avatars.githubusercontent.com", // GitHub avatars if needed
     ],
-    unoptimized: true,
+    unoptimized: false,
   },
 
   // Environment variables that should be available on the client side
@@ -22,7 +23,7 @@ const nextConfig = {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
   },
 
-  // Webpack configuration for D3.js and other libraries
+  // Webpack configuration for Material-UI and D3.js
   webpack: (config, { isServer }) => {
     // Handle D3.js modules
     config.resolve.fallback = {
@@ -30,14 +31,6 @@ const nextConfig = {
       fs: false,
       path: false,
       os: false,
-    }
-
-    // Optimize bundle size
-    if (!isServer) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        "@mui/styled-engine": "@mui/styled-engine-sc",
-      }
     }
 
     return config
@@ -96,13 +89,16 @@ const nextConfig = {
 
   // ESLint configuration
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
 
   // TypeScript configuration
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
+
+  // Disable CSS optimization that's causing issues
+  optimizeCss: false,
 }
 
 module.exports = nextConfig

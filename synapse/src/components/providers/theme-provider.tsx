@@ -1,6 +1,7 @@
 "use client"
 
 import { ThemeProvider as MUIThemeProvider, createTheme } from "@mui/material/styles"
+import { StyledEngineProvider } from "@mui/material/styles"
 import CssBaseline from "@mui/material/CssBaseline"
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
 
@@ -79,10 +80,12 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   return (
     <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
-      <MUIThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </MUIThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <MUIThemeProvider theme={theme}>
+          <CssBaseline />
+          {children}
+        </MUIThemeProvider>
+      </StyledEngineProvider>
     </ThemeContext.Provider>
   )
 }

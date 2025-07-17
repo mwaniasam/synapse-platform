@@ -4,7 +4,7 @@ import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { AuthProvider } from "@/components/providers/auth-provider"
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter"
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <AppRouterCacheProvider>
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <AuthProvider>
             <ThemeProvider>{children}</ThemeProvider>
           </AuthProvider>

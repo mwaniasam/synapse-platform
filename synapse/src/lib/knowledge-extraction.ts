@@ -126,7 +126,7 @@ export class KnowledgeExtractionEngine {
     const capitalizedTerms = sentence.match(/\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/g) || []
     concepts.push(...capitalizedTerms.filter((term) => term.length > 2))
 
-    return [...new Set(concepts)] // Remove duplicates
+    return Array.from(new Set(concepts)) // Remove duplicates
   }
 
   private extractNounPhrases(words: string[]): string[] {
@@ -193,7 +193,7 @@ export class KnowledgeExtractionEngine {
     weight += (1 - relativePosition) * 0.5
 
     // Increase weight for capitalization
-    if (concept[0] === concept[0].toUpperCase()) {
+    if (typeof concept === "string" && concept && concept.length > 0 && concept[0] === concept[0].toUpperCase()) {
       weight += 0.5
     }
 
@@ -230,10 +230,14 @@ export class KnowledgeExtractionEngine {
 
     for (let i = 0; i < concepts.length; i++) {
       for (let j = i + 1; j < concepts.length; j++) {
-        const relation = this.calculateRelation(concepts[i], concepts[j])
-        if (relation.strength > 0.3) {
-          // Only keep strong relations
-          relations.push(relation)
+        const concept1 = concepts[i]
+        const concept2 = concepts[j]
+        if (concept1 && concept2) {
+          const relation = this.calculateRelation(concept1, concept2)
+          if (relation.strength > 0.3) {
+            // Only keep strong relations
+            relations.push(relation)
+          }
         }
       }
     }
@@ -280,8 +284,8 @@ export class KnowledgeExtractionEngine {
     const words1 = new Set(context1.toLowerCase().split(/\s+/))
     const words2 = new Set(context2.toLowerCase().split(/\s+/))
 
-    const intersection = new Set([...words1].filter((x) => words2.has(x)))
-    const union = new Set([...words1, ...words2])
+    const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)))
+    const union = new Set([...Array.from(words1), ...Array.from(words2)])
 
     return intersection.size / union.size // Jaccard similarity
   }

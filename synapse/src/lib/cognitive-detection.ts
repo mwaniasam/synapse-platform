@@ -78,6 +78,7 @@ export class CognitiveDetectionEngine {
     const keypresses = this.interactions.filter((i) => i.type === "keypress").slice(-2)
 
     if (keypresses.length < 2) return 0
+    if (!keypresses[0] || !keypresses[1]) return 0
     return keypresses[1].timestamp - keypresses[0].timestamp
   }
 
@@ -96,10 +97,10 @@ export class CognitiveDetectionEngine {
   private getScrollDirection(): "up" | "down" | "none" {
     const scrollEvents = this.interactions.filter((i) => i.type === "scroll").slice(-2)
 
-    if (scrollEvents.length < 2) return "none"
+    if (scrollEvents.length < 2 || !scrollEvents[1] || !scrollEvents[0]) return "none"
 
-    const current = scrollEvents[1].data.scrollY
-    const previous = scrollEvents[0].data.scrollY
+    const current = scrollEvents[1].data?.scrollY
+    const previous = scrollEvents[0].data?.scrollY
 
     return current > previous ? "down" : current < previous ? "up" : "none"
   }
@@ -138,14 +139,21 @@ export class CognitiveDetectionEngine {
   private calculateTypingSpeed(keypresses: InteractionData[]): number {
     if (keypresses.length < 2) return 0
 
-    const timeSpan = keypresses[keypresses.length - 1].timestamp - keypresses[0].timestamp
+    const first = keypresses[0];
+    const last = keypresses[keypresses.length - 1];
+    if (!first || !last) return 0;
+
+    const timeSpan = last.timestamp - first.timestamp;
     return (keypresses.length / timeSpan) * 60000 // WPM approximation
   }
 
   private calculateTypingRhythm(keypresses: InteractionData[]): number {
     if (keypresses.length < 3) return 0
 
-    const intervals = keypresses.slice(1).map((kp, i) => kp.timestamp - keypresses[i].timestamp)
+    const intervals = keypresses.slice(1).map((kp, i) => {
+      const prev = keypresses[i];
+      return prev && kp ? kp.timestamp - prev.timestamp : 0;
+    })
 
     const mean = intervals.reduce((a, b) => a + b, 0) / intervals.length
     const variance = intervals.reduce((acc, interval) => acc + Math.pow(interval - mean, 2), 0) / intervals.length
@@ -167,14 +175,14 @@ export class CognitiveDetectionEngine {
     let totalDistance = 0
 
     for (let i = 1; i < scrolls.length; i++) {
-      const current = scrolls[i].data.scrollY
-      const previous = scrolls[i - 1].data.scrollY
+      const current = scrolls[i].data?.scrollY ?? 0
+      const previous = scrolls[i - 1].data?.scrollY ?? 0
       const distance = Math.abs(current - previous)
 
       totalDistance += distance
 
       if (i > 1) {
-        const prevDirection = scrolls[i - 1].data.scrollY - scrolls[i - 2].data.scrollY
+        const prevDirection = (scrolls[i - 1].data?.scrollY ?? 0) - (scrolls[i - 2].data?.scrollY ?? 0)
         const currDirection = current - previous
 
         if ((prevDirection > 0 && currDirection < 0) || (prevDirection < 0 && currDirection > 0)) {
