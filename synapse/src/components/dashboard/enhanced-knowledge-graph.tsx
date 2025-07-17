@@ -14,10 +14,10 @@ import {
   ListItem,
   ListItemText,
   TextField,
-  Grid,
   Paper,
   IconButton,
   Tooltip,
+  Grid2 as Grid,
 } from "@mui/material"
 import { AccountTree, Visibility, Search, ZoomIn, ZoomOut, Refresh } from "@mui/icons-material"
 import * as d3 from "d3"
@@ -114,7 +114,7 @@ export function EnhancedKnowledgeGraph() {
     const zoom = d3
       .zoom()
       .scaleExtent([0.1, 4])
-      .on("zoom", (event) => {
+      .on("zoom", (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
         g.attr("transform", event.transform)
         setZoomLevel(event.transform.k)
       })
@@ -162,7 +162,7 @@ export function EnhancedKnowledgeGraph() {
       .style("pointer-events", "none")
 
     // Add click handler
-    node.on("click", (event, d: any) => {
+    node.on("click", (event: any, d: any) => {
       setSelectedNode(d)
       setDialogOpen(true)
     })
@@ -243,7 +243,7 @@ export function EnhancedKnowledgeGraph() {
           </Box>
 
           <Grid container spacing={2} sx={{ mb: 2 }}>
-            <Grid item xs={12} md={6}>
+            <Grid xs={12} md={6}>
               <TextField
                 fullWidth
                 size="small"
@@ -255,7 +255,7 @@ export function EnhancedKnowledgeGraph() {
                 }}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid xs={12} md={6}>
               <TextField
                 select
                 fullWidth
@@ -300,7 +300,7 @@ export function EnhancedKnowledgeGraph() {
         <DialogContent>
           {selectedNode && (
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+              <Grid xs={12} md={6}>
                 <Typography variant="body1" gutterBottom>
                   <strong>Domain:</strong> {selectedNode.domain}
                 </Typography>
@@ -315,7 +315,7 @@ export function EnhancedKnowledgeGraph() {
                 </Typography>
               </Grid>
 
-              <Grid item xs={12} md={6}>
+              <Grid xs={12} md={6}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   Connected Concepts:
                 </Typography>

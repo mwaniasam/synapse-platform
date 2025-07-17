@@ -10,8 +10,8 @@ import {
   LinearProgress,
   IconButton,
   Tooltip,
-  Grid,
   Paper,
+  Grid2 as Grid,
 } from "@mui/material"
 import { Psychology, Pause, PlayArrow, TrendingUp, Speed, Mouse, TouchApp } from "@mui/icons-material"
 import { CognitiveDetectionEngine } from "@/lib/cognitive-detection"
@@ -110,7 +110,7 @@ export function EnhancedCognitiveIndicator() {
 
         <Grid container spacing={2}>
           {/* Main State Display */}
-          <Grid item xs={12} md={6}>
+          <Grid xs={12} md={6}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
               <Typography variant="h3" component="span">
                 {config.icon}
@@ -149,12 +149,12 @@ export function EnhancedCognitiveIndicator() {
           </Grid>
 
           {/* Metrics Display */}
-          <Grid item xs={12} md={6}>
+          <Grid xs={12} md={6}>
             <Typography variant="subtitle2" gutterBottom>
               Real-time Metrics
             </Typography>
             <Grid container spacing={1}>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <Paper sx={{ p: 1, textAlign: "center" }}>
                   <Speed fontSize="small" />
                   <Typography variant="caption" display="block">
@@ -165,7 +165,7 @@ export function EnhancedCognitiveIndicator() {
                   </Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <Paper sx={{ p: 1, textAlign: "center" }}>
                   <Mouse fontSize="small" />
                   <Typography variant="caption" display="block">
@@ -176,7 +176,7 @@ export function EnhancedCognitiveIndicator() {
                   </Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <Paper sx={{ p: 1, textAlign: "center" }}>
                   <TrendingUp fontSize="small" />
                   <Typography variant="caption" display="block">
@@ -187,7 +187,7 @@ export function EnhancedCognitiveIndicator() {
                   </Typography>
                 </Paper>
               </Grid>
-              <Grid item xs={6}>
+              <Grid xs={6}>
                 <Paper sx={{ p: 1, textAlign: "center" }}>
                   <TouchApp fontSize="small" />
                   <Typography variant="caption" display="block">
