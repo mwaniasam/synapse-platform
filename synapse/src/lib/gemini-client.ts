@@ -6,6 +6,9 @@ export class GeminiClient {
   private model: any
 
   constructor() {
+    if (!env.GEMINI_API_KEY) {
+      throw new Error("GEMINI_API_KEY is not defined in environment variables.")
+    }
     this.genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY)
     this.model = this.genAI.getGenerativeModel({ model: "gemini-pro" })
   }

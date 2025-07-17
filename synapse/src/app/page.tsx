@@ -1,6 +1,7 @@
-import { Container, Typography, Button, Box, Grid, Card, CardContent } from "@mui/material"
+import { Container, Typography, Button, Box, Card, CardContent } from "@mui/material"
 import { Psychology, TrendingUp, AccountTree, AutoAwesome } from "@mui/icons-material"
 import Link from "next/link"
+import { Grid } from "@mui/material"
 
 export default function Home() {
   return (
@@ -27,7 +28,7 @@ export default function Home() {
 
       {/* Features Section */}
       <Grid container spacing={4} sx={{ py: 8 }}>
-        <Grid item xs={12} md={3}>
+        <Grid xs={12} md={3}>
           <Card sx={{ height: "100%", textAlign: "center" }}>
             <CardContent>
               <Psychology sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
@@ -41,7 +42,7 @@ export default function Home() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={3}>
+        <Grid xs={12} md={3}>
           <Card sx={{ height: "100%", textAlign: "center" }}>
             <CardContent>
               <TrendingUp sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
@@ -55,7 +56,7 @@ export default function Home() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={3}>
+        <Grid xs={12} md={3}>
           <Card sx={{ height: "100%", textAlign: "center" }}>
             <CardContent>
               <AccountTree sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
@@ -69,7 +70,7 @@ export default function Home() {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={3}>
+        <Grid xs={12} md={3}>
           <Card sx={{ height: "100%", textAlign: "center" }}>
             <CardContent>
               <AutoAwesome sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />

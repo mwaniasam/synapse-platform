@@ -1,11 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove deprecated experimental options
-  experimental: {
-    // Remove appDir as it's now stable in Next.js 14
-    // Remove optimizeCss as it's causing the critters error
-  },
-
   // Enable SWC minification for better performance
   swcMinify: true,
 
@@ -96,9 +90,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-
-  // Disable CSS optimization that's causing issues
-  optimizeCss: false,
 }
 
 module.exports = nextConfig
