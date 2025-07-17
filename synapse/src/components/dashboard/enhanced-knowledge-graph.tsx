@@ -198,7 +198,7 @@ export function EnhancedKnowledgeGraph() {
     }
   }
 
-  const domains = ["All", ...new Set(graphData.nodes.map((n) => n.domain))]
+  const domains = ["All", ...Array.from(new Set(graphData.nodes.map((n) => n.domain)))]
 
   const getConnectedConcepts = (node: ConceptNode) => {
     return graphData.links
