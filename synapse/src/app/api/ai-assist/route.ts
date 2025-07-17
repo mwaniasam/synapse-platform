@@ -2,16 +2,20 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { GoogleGenerativeAI } from "@google/generative-ai"
-import { env } from "@/lib/env"
+import { GeminiClient } from "@/lib/gemini-client"
 import { z } from "zod"
 
-const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY)
-
-const aiAssistSchema = z.object({
-  type: z.enum(["summary", "qa", "recommendation"]),
-  query: z.string().min(1),
-  context: z.string().optional(),
+const aiRequestSchema = z.object({
+  type: z.enum(["question", "summary", "recommendation", "path"]),
+  data: z.object({
+    question: z.string().optional(),
+    content: z.string().optional(),
+    context: z.string().optional(),
+    cognitiveState: z.string().optional(),
+    userKnowledge: z.array(z.string()).optional(),
+    learningGoals: z.array(z.string()).optional(),
+    timeAvailable: z.number().optional(),
+  }),
 })
 
 export async function POST(request: NextRequest) {
@@ -22,44 +26,77 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { type, query, context } = aiAssistSchema.parse(body)
+    const validatedData = aiRequestSchema.parse(body)
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+    const geminiClient = new GeminiClient()
+    let response: any
 
-    let prompt = ""
-    switch (type) {
+    switch (validatedData.type) {
+      case "question":
+        response = await geminiClient.answerQuestion(
+          validatedData.data.question || "",
+          validatedData.data.context || "",
+          validatedData.data.userKnowledge || [],
+        )
+        break
+
       case "summary":
-        prompt = `Please provide a concise summary of the following content, focusing on key concepts and main ideas:\n\n${query}`
+        response = await geminiClient.summarizeContent(
+          validatedData.data.content || "",
+          validatedData.data.cognitiveState || "focused",
+          "moderate",
+        )
         break
-      case "qa":
-        prompt = `Answer the following question in a clear and educational manner:\n\nQuestion: ${query}\n\n${context ? `Context: ${context}` : ""}`
-        break
+
       case "recommendation":
-        prompt = `Based on the user's learning context, provide personalized learning recommendations:\n\nContext: ${query}\n\nPlease suggest specific resources, topics to explore, or learning strategies.`
+        // Get user's recent cognitive states and knowledge
+        const recentStates = await prisma.cognitiveState.findMany({
+          where: { userId: session.user.id },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        })
+
+        const knowledgeNodes = await prisma.knowledgeNode.findMany({
+          where: { userId: session.user.id },
+          orderBy: { lastEncounter: "desc" },
+          take: 20,
+        })
+
+        response = await geminiClient.generatePersonalizedRecommendations({
+          cognitiveState: recentStates[0]?.state || "focused",
+          learningHistory: knowledgeNodes.map((n: { concept: string }) => n.concept),
+          currentTopic: validatedData.data.context || "General Learning",
+          knowledgeGaps: validatedData.data.learningGoals || [],
+        })
         break
+
+      case "path":
+        response = await geminiClient.generateLearningPath(
+          validatedData.data.userKnowledge || [],
+          validatedData.data.learningGoals || [],
+          validatedData.data.timeAvailable || 10,
+          validatedData.data.cognitiveState || "focused",
+        )
+        break
+
+      default:
+        return NextResponse.json({ error: "Invalid request type" }, { status: 400 })
     }
 
-    const result = await model.generateContent(prompt)
-    const response = await result.response
-    const text = response.text()
-
-    // Save interaction to database
+    // Log the AI interaction
     await prisma.aIInteraction.create({
       data: {
         userId: session.user.id,
-        type,
-        query,
-        response: text,
-        context,
+        type: validatedData.type,
+        query: JSON.stringify(validatedData.data),
+        response: JSON.stringify(response),
+        context: validatedData.data.context,
       },
     })
 
-    return NextResponse.json({
-      response: text,
-      type,
-    })
+    return NextResponse.json(response)
   } catch (error) {
-    console.error("AI assistance error:", error)
+    console.error("Error processing AI request:", error)
     return NextResponse.json({ error: "Failed to process AI request" }, { status: 500 })
   }
 }
@@ -72,21 +109,23 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
+    const limit = Number.parseInt(searchParams.get("limit") || "20")
     const type = searchParams.get("type")
-    const limit = Number.parseInt(searchParams.get("limit") || "10")
+
+    const whereClause: any = { userId: session.user.id }
+    if (type) {
+      whereClause.type = type
+    }
 
     const interactions = await prisma.aIInteraction.findMany({
-      where: {
-        userId: session.user.id,
-        ...(type && { type }),
-      },
+      where: whereClause,
       orderBy: { createdAt: "desc" },
       take: limit,
     })
 
     return NextResponse.json(interactions)
   } catch (error) {
-    console.error("Failed to fetch AI interactions:", error)
-    return NextResponse.json({ error: "Failed to fetch interactions" }, { status: 500 })
+    console.error("Error fetching AI interactions:", error)
+    return NextResponse.json({ error: "Failed to fetch AI interactions" }, { status: 500 })
   }
 }

@@ -14,7 +14,7 @@ const createSessionSchema = z.object({
 const updateSessionSchema = z.object({
   endTime: z.string().datetime().optional(),
   duration: z.number().optional(),
-  focusScore: z.number().optional(),
+  focusScore: z.number().min(0).max(1).optional(),
   conceptsLearned: z.number().optional(),
   adaptationsUsed: z.number().optional(),
 })
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(learningSession)
   } catch (error) {
-    console.error("Failed to create session:", error)
+    console.error("Error creating session:", error)
     return NextResponse.json({ error: "Failed to create session" }, { status: 500 })
   }
 }
@@ -55,26 +55,29 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url)
-    const limit = Number.parseInt(searchParams.get("limit") || "10")
+    const limit = Number.parseInt(searchParams.get("limit") || "20")
+    const offset = Number.parseInt(searchParams.get("offset") || "0")
 
     const sessions = await prisma.learningSession.findMany({
       where: { userId: session.user.id },
-      orderBy: { createdAt: "desc" },
+      orderBy: { startTime: "desc" },
       take: limit,
+      skip: offset,
       include: {
         cognitiveStates: {
-          take: 1,
           orderBy: { createdAt: "desc" },
+          take: 5,
         },
         knowledgeNodes: {
-          take: 5,
+          orderBy: { lastEncounter: "desc" },
+          take: 10,
         },
       },
     })
 
     return NextResponse.json(sessions)
   } catch (error) {
-    console.error("Failed to fetch sessions:", error)
+    console.error("Error fetching sessions:", error)
     return NextResponse.json({ error: "Failed to fetch sessions" }, { status: 500 })
   }
 }
