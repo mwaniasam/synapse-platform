@@ -11,7 +11,7 @@ import {
   IconButton,
   Tooltip,
   Paper,
-  Grid2 as Grid,
+  Grid,
 } from "@mui/material"
 import { Psychology, Pause, PlayArrow, TrendingUp, Speed, Mouse, TouchApp } from "@mui/icons-material"
 import { CognitiveDetectionEngine } from "@/lib/cognitive-detection"

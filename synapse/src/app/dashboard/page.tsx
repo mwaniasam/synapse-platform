@@ -1,7 +1,7 @@
 import { Container, Typography, Button, Box, Card, CardContent } from "@mui/material"
 import { Psychology, TrendingUp, AccountTree, AutoAwesome } from "@mui/icons-material"
 import Link from "next/link"
-import { Grid2 as Grid } from "@mui/material"
+import { Grid } from "@mui/material"
 
 export default function Home() {
   return (
