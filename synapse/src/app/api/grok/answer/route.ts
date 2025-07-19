@@ -1,12 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { grokAIClient } from '@/lib/server/grok-ai-client';
 
-// Enable CORS
+// CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
+
+// Mock response generator
+function generateMockAnswer(question: string, context: string): string {
+  const contextPreview = context.length > 100 
+    ? `${context.substring(0, 100)}...` 
+    : context;
+    
+  return `Based on the context: "${contextPreview}"\n\n` +
+         `Answer to "${question}": This is a mock response. In a real implementation, ` +
+         `I would analyze the context and provide a detailed answer. (Demo Mode)`;
+}
 
 export async function OPTIONS() {
   return new NextResponse(null, {
@@ -17,37 +27,50 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { question, context = '', model, temperature } = await request.json();
+    const { question, context } = await request.json();
     
-    if (!question) {
+    if (!question || !context) {
       return new NextResponse(
-        JSON.stringify({ error: 'Question is required' }),
+        JSON.stringify({ 
+          error: 'Question and context are required',
+          mock: true
+        }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
 
-    const response = await grokAIClient.answerQuestion(question, context, { 
-      model,
-      temperature,
-    });
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 300));
     
-    return new NextResponse(
-      JSON.stringify({ response }),
-      { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-    );
-  } catch (error: any) {
-    console.error('Error in answer endpoint:', error);
-    const status = error.status || 500;
-    const message = error.message || 'Failed to process answer';
+    const response = generateMockAnswer(question, context);
     
     return new NextResponse(
       JSON.stringify({ 
-        error: message,
-        details: error.data || (error instanceof Error ? error.message : 'Unknown error')
+        response,
+        mock: true
       }),
       { 
-        status,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders } 
+        status: 200, 
+        headers: { 
+          'Content-Type': 'application/json', 
+          ...corsHeaders 
+        } 
+      }
+    );
+  } catch (error) {
+    console.error('Error in answer endpoint:', error);
+    
+    return new NextResponse(
+      JSON.stringify({ 
+        response: "I'm having some trouble processing your question right now. Please try again later. (Demo Mode)",
+        mock: true
+      }),
+      { 
+        status: 200, 
+        headers: { 
+          'Content-Type': 'application/json', 
+          ...corsHeaders 
+        } 
       }
     );
   }

@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GrokAIClient } from '@/lib/server/grok-ai-client';
-import { mockGrokClient } from '@/lib/server/mock-grok-client';
 
-// Initialize clients
-const grokAIClient = new GrokAIClient();
+// Simple mock responses
+const mockResponses = {
+  greeting: "Hello! I'm your AI assistant. How can I help you today? (Demo Mode)",
+  question: "That's an interesting question! In a real implementation, I would provide a detailed response based on your query. (Demo Mode)",
+  summary: "This is a mock summary of your content. In a real implementation, I would analyze and summarize the provided text. (Demo Mode)",
+  default: "I'm here to help! What would you like to know? (Demo Mode)"
+};
 
 // CORS headers
 const corsHeaders = {
@@ -11,10 +14,6 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
-
-// Use mock client if explicitly set or in development
-const useMock = process.env.USE_MOCK === 'true' || process.env.NODE_ENV !== 'production';
-const client = useMock ? mockGrokClient : grokAIClient;
 
 export async function OPTIONS() {
   return new NextResponse(null, {
@@ -25,24 +24,38 @@ export async function OPTIONS() {
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, temperature } = await request.json();
+    const { messages } = await request.json();
     
     if (!messages || !Array.isArray(messages)) {
       return new NextResponse(
         JSON.stringify({ 
           error: 'Messages array is required',
-          mock: useMock
+          mock: true
         }),
         { status: 400, headers: corsHeaders }
       );
     }
 
-    const response = await client.chat(messages, { temperature });
+    // Get the last user message
+    const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || '';
+    
+    // Generate a mock response based on the message content
+    let response = mockResponses.default;
+    if (lastMessage.includes('hello') || lastMessage.includes('hi')) {
+      response = mockResponses.greeting;
+    } else if (lastMessage.includes('?')) {
+      response = mockResponses.question;
+    } else if (lastMessage.includes('summarize')) {
+      response = mockResponses.summary;
+    }
+    
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 300));
     
     return new NextResponse(
       JSON.stringify({ 
         response,
-        mock: useMock
+        mock: true
       }),
       { 
         status: 200, 
@@ -52,16 +65,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error in chat endpoint:', error);
     
-    const status = (error as any)?.status || 500;
-    const message = (error as Error)?.message || 'Internal Server Error';
-    
     return new NextResponse(
       JSON.stringify({ 
-        error: message,
-        mock: useMock
+        response: "I'm having some trouble right now. Please try again later. (Demo Mode)",
+        mock: true
       }),
       { 
-        status, 
+        status: 200, 
         headers: corsHeaders 
       }
     );
