@@ -2,6 +2,11 @@ import { NextResponse } from 'next/server';
 import { grokServer } from '@/lib/server/grok-server';
 import { GrokClientError } from '@/lib/grok-client';
 
+// Simple health check endpoint
+export async function GET() {
+  return NextResponse.json({ status: 'ok', message: 'Grok API is running' });
+}
+
 // Ensure this route is always dynamic
 export const dynamic = 'force-dynamic';
 

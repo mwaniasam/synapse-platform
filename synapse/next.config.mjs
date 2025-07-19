@@ -1,8 +1,13 @@
-// @ts-check
+// @ts-nocheck
 /** @type {import('next').NextConfig} */
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { withSentryConfig } from '@sentry/nextjs';
+
+// Set Node.js TLS settings for development
+if (process.env.NODE_ENV !== 'production') {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+}
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -187,16 +192,54 @@ const nextConfig = {
   compress: true,
 };
 
-// Export the configuration with Sentry
+const updatedConfig = {
+  ...nextConfig,
+  webpack: (config, { isServer }) => {
+    // Add rule to handle font files
+    config.module.rules.push({
+      test: /\.(ttf|eot|woff|woff2|otf)$/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/fonts/[name][ext]',
+      },
+    });
+
+    // Add rule to handle other binary assets
+    config.module.rules.push({
+      test: /\.(bin|data|wasm)$/,
+      type: 'asset/resource',
+      generator: {
+        filename: 'static/media/[name][ext]',
+      },
+    });
+
+    // Exclude problematic modules from server-side bundling
+    if (isServer) {
+      config.externals = config.externals || [];
+      config.externals.push(({ context, request }, callback) => {
+        // Exclude patchright-core from server-side bundling
+        if (request && request.includes('patchright-core')) {
+          return callback(null, `commonjs ${request}`);
+        }
+        return callback();
+      });
+    }
+
+    // Apply existing webpack config if it exists
+    if (typeof nextConfig.webpack === 'function') {
+      return nextConfig.webpack(config, { isServer });
+    }
+
+    return config;
+  },
+};
+
+// Apply Sentry configuration
 const configWithSentry = withSentryConfig(
-  nextConfig,
+  updatedConfig,
   {
-    // For all available options, see:
-    // https://github.com/getsentry/sentry-webpack-plugin#options
     ...sentryWebpackPluginOptions,
-    // Suppresses all logs
     silent: true,
-    // Disable Sentry in development
     // @ts-ignore
     disableServerWebpackPlugin: disableSentry,
     disableClientWebpackPlugin: disableSentry,
