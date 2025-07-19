@@ -99,14 +99,16 @@ export function SessionSummary() {
               <Box key={session.id}>
                 <ListItem sx={{ px: 0 }}>
                   <ListItemText
-                    primary={session.title}
+                    primary={<Box>{session.title}</Box>}
+                    primaryTypographyProps={{ component: "div" }}
+                    secondaryTypographyProps={{ component: "div" }}
                     secondary={
                       <Box>
-                        <Typography variant="caption" display="block">
+                        <Typography variant="caption" component="div">
                           {new Date(session.startTime).toLocaleDateString()}
                         </Typography>
                         {session.duration && (
-                          <Typography variant="caption" display="block">
+                          <Typography variant="caption" component="div">
                             Duration: {formatDuration(session.duration)}
                           </Typography>
                         )}
@@ -122,7 +124,7 @@ export function SessionSummary() {
                         </Box>
                         {session.cognitiveStates.length > 0 && (
                           <Box sx={{ mt: 1 }}>
-                            <Typography variant="caption" display="block">
+                            <Typography variant="caption" component="div">
                               Cognitive States:
                             </Typography>
                             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: 0.5 }}>

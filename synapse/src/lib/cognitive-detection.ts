@@ -168,32 +168,41 @@ export class CognitiveDetectionEngine {
     return velocities.reduce((a, b) => a + b, 0) / velocities.length
   }
 
-  private calculateScrollPattern(scrolls: InteractionData[]): number {
-    if (scrolls.length < 2) return 0
+  private calculateScrollPattern(scrolls: Array<InteractionData & { data: { scrollY: number } }>): number {
+    if (scrolls.length < 3) return 0;
 
-    let directionChanges = 0
-    let totalDistance = 0
+    let directionChanges = 0;
+    let totalDistance = 0;
 
-    for (let i = 1; i < scrolls.length; i++) {
-      const current = scrolls[i].data?.scrollY ?? 0
-      const previous = scrolls[i - 1].data?.scrollY ?? 0
-      const distance = Math.abs(current - previous)
+    // Filter and type guard to ensure we only have valid scroll data
+    const validScrolls = scrolls
+        .filter((scroll): scroll is InteractionData & { data: { scrollY: number } } => 
+            scroll?.data !== undefined && 
+            typeof scroll.data.scrollY === 'number'
+        );
 
-      totalDistance += distance
+    // Need at least 3 points to calculate direction changes
+    if (validScrolls.length < 3) return 0;
 
-      if (i > 1) {
-        const prevDirection = (scrolls[i - 1].data?.scrollY ?? 0) - (scrolls[i - 2].data?.scrollY ?? 0)
-        const currDirection = current - previous
+    // Start from index 2 to ensure we have i-1 and i-2
+    for (let i = 2; i < validScrolls.length; i++) {
+        const current = validScrolls[i].data.scrollY;
+        const previous = validScrolls[i - 1].data.scrollY;
+        const beforePrevious = validScrolls[i - 2].data.scrollY;
+        
+        const distance = Math.abs(current - previous);
+        totalDistance += distance;
+
+        const prevDirection = previous - beforePrevious;
+        const currDirection = current - previous;
 
         if ((prevDirection > 0 && currDirection < 0) || (prevDirection < 0 && currDirection > 0)) {
-          directionChanges++
+            directionChanges++;
         }
-      }
     }
 
-    return directionChanges / Math.max(totalDistance, 1) // Normalized erratic scrolling
-  }
-
+    return totalDistance > 0 ? directionChanges / totalDistance : 0;
+}
   private calculateFocusStability(focusEvents: InteractionData[]): number {
     const focusLosses = focusEvents.filter((e) => e.type === "blur").length
     const timeSpan = this.analysisWindow / 1000 // Convert to seconds

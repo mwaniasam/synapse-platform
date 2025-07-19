@@ -40,6 +40,7 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
+  password      String?   // Added for credentials auth
   accounts      Account[]
   sessions      Session[]
   
@@ -131,10 +132,12 @@ model KnowledgeNode {
   sessionId String?
   session   LearningSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   
-  concept     String
-  description String?
-  domain      String?
-  url         String? // Source URL where concept was found
+  concept        String
+  description    String?
+  domain         String?
+  url            String? // Source URL where concept was found
+  context        String? // The sentence/paragraph where the concept was found
+  weight         Float   @default(1.0) // Importance of the concept
   
   // Relationships
   relatedNodes KnowledgeRelation[] @relation("FromNode")
@@ -169,7 +172,7 @@ model AIInteraction {
   userId    String
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  type      String   // "summary", "qa", "recommendation"
+  type      String   // "summary", "qa", "recommendation", "path"
   query     String
   response  String
   context   String?  // Additional context about the interaction

@@ -1,53 +1,51 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
+import { z } from "zod"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { z } from "zod"
+import { withRateLimit } from "@/lib/rate-limit"
+import { withValidation } from "@/lib/validation-middleware"
+import type { ValidatedRequest } from "@/types/next-request"
+import { createSessionSchema } from "@/lib/schemas/session"
 
-const createSessionSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().optional(),
-  subject: z.string().optional(),
-  goals: z.array(z.string()).default([]),
-})
+type CreateSessionRequest = ValidatedRequest<z.infer<typeof createSessionSchema>>;
 
-const updateSessionSchema = z.object({
-  endTime: z.string().datetime().optional(),
-  duration: z.number().optional(),
-  focusScore: z.number().min(0).max(1).optional(),
-  conceptsLearned: z.number().optional(),
-  adaptationsUsed: z.number().optional(),
-})
-
-export async function POST(request: NextRequest) {
+async function handlePOST(request: CreateSessionRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const body = await request.json()
-    const validatedData = createSessionSchema.parse(body)
-
     const learningSession = await prisma.learningSession.create({
       data: {
         userId: session.user.id,
-        title: validatedData.title,
-        description: validatedData.description,
-        subject: validatedData.subject,
-        goals: validatedData.goals,
+        title: request.data.title,
+        description: request.data.description,
+        subject: request.data.subject,
+        goals: request.data.goals,
         startTime: new Date(),
       },
     })
 
     return NextResponse.json(learningSession)
   } catch (error) {
-    console.error("Error creating session:", error)
-    return NextResponse.json({ error: "Failed to create session" }, { status: 500 })
+    console.error("Error creating session:", error);
+    return NextResponse.json(
+      { error: "Failed to create session" }, 
+      { status: 500 }
+    );
   }
 }
 
-export async function GET(request: NextRequest) {
+// Create a type-safe handler with validation
+const validatedHandler = withValidation(createSessionSchema, handlePOST);
+
+export async function POST(request: NextRequest) {
+  return withRateLimit(request, validatedHandler);
+}
+
+async function handleGET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) {
@@ -77,7 +75,14 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(sessions)
   } catch (error) {
-    console.error("Error fetching sessions:", error)
-    return NextResponse.json({ error: "Failed to fetch sessions" }, { status: 500 })
+    console.error("Error fetching sessions:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch sessions" },
+      { status: 500 }
+    );
   }
+}
+
+export async function GET(request: NextRequest) {
+  return withRateLimit(request, handleGET);
 }

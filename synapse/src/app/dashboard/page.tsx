@@ -1,89 +1,93 @@
-import { Container, Typography, Button, Box, Card, CardContent } from "@mui/material"
-import { Psychology, TrendingUp, AccountTree, AutoAwesome } from "@mui/icons-material"
-import Link from "next/link"
-import { Grid } from "@mui/material"
+"use client"
 
-export default function Home() {
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { Container, Grid as Grid, Typography, Box, CircularProgress } from "@mui/material"
+import { Navbar } from "@/components/layout/navbar"
+import { EnhancedCognitiveIndicator } from "@/components/dashboard/enhanced-cognitive-indicator"
+import { EnhancedKnowledgeGraph } from "@/components/dashboard/enhanced-knowledge-graph"
+import { AIAssistant } from "@/components/ai/ai-assistant"
+import { QuickActions } from "@/components/dashboard/quick-actions"
+import { SessionSummary } from "@/components/dashboard/session-summary"
+import { ServicesGrid } from "@/components/dashboard/services-grid"
+
+export default function Dashboard() {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/auth/signin")
+    }
+  }, [status, router])
+
+  if (status === "loading") {
+    return (
+      <>
+        <Navbar />
+        <Container maxWidth="xl" sx={{ mt: 8, mb: 4, textAlign: "center" }}>
+          <CircularProgress size={60} sx={{ mb: 3 }} />
+          <Typography variant="h5" color="text.secondary">
+            Loading your dashboard...
+          </Typography>
+        </Container>
+      </>
+    )
+  }
+
+  // If status is not loading and no session, it means unauthenticated and redirected by useEffect
+  if (!session) {
+    return null
+  }
+
+  const displayName = session?.user?.name || "User"
+
   return (
-    <Container maxWidth="lg">
-      {/* Hero Section */}
-      <Box sx={{ textAlign: "center", py: 8 }}>
-        <Typography variant="h2" component="h1" gutterBottom>
-          Synapse
-        </Typography>
-        <Typography variant="h5" component="h2" color="text.secondary" gutterBottom>
-          Cognitive Learning Acceleration Platform
-        </Typography>
-        <Typography variant="body1" sx={{ mb: 4, maxWidth: 600, mx: "auto" }}>
-          Transform your digital learning experience with AI-powered cognitive state detection, adaptive content
-          presentation, and intelligent knowledge mapping.
-        </Typography>
-        <Button variant="contained" size="large" component={Link} href="/auth/signin" sx={{ mr: 2 }}>
-          Get Started
-        </Button>
-        <Button variant="outlined" size="large" component={Link} href="/about">
-          Learn More
-        </Button>
-      </Box>
+    <>
+      <Navbar />
+      <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <Box sx={{ mb: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
+            Welcome back, {displayName}
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Your cognitive learning dashboard - enhanced with AI assistance
+          </Typography>
+        </Box>
 
-      {/* Features Section */}
-      <Grid container spacing={4} sx={{ py: 8 }}>
-        <Grid xs={12} md={3}>
-          <Card sx={{ height: "100%", textAlign: "center" }}>
-            <CardContent>
-              <Psychology sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                Cognitive Detection
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Real-time analysis of your cognitive state through interaction patterns
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+        <Grid container spacing={3}>
+          {/* Quick Actions */}
+          <Grid item xs={12} md={4}>
+            <QuickActions />
+          </Grid>
 
-        <Grid xs={12} md={3}>
-          <Card sx={{ height: "100%", textAlign: "center" }}>
-            <CardContent>
-              <TrendingUp sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                Adaptive Content
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Dynamic content adaptation based on your current cognitive state
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+          {/* Cognitive State Indicator */}
+          <Grid item xs={12} md={8}>
+            <EnhancedCognitiveIndicator />
+          </Grid>
 
-        <Grid xs={12} md={3}>
-          <Card sx={{ height: "100%", textAlign: "center" }}>
-            <CardContent>
-              <AccountTree sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                Knowledge Mapping
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Visualize connections between concepts and track learning progress
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+          {/* AI Learning Assistant */}
+          <Grid item xs={12} md={6}>
+            <AIAssistant />
+          </Grid>
 
-        <Grid xs={12} md={3}>
-          <Card sx={{ height: "100%", textAlign: "center" }}>
-            <CardContent>
-              <AutoAwesome sx={{ fontSize: 48, color: "primary.main", mb: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                AI Assistance
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Personalized learning recommendations powered by Gemini AI
-              </Typography>
-            </CardContent>
-          </Card>
+          {/* Knowledge Graph Visualization */}
+          <Grid item xs={12} md={6}>
+            <EnhancedKnowledgeGraph />
+          </Grid>
+
+          {/* Recent Sessions Summary */}
+          <Grid item xs={12}>
+            <SessionSummary />
+          </Grid>
+          
+          {/* Services Grid */}
+          <Grid item xs={12}>
+            <ServicesGrid />
+          </Grid>
         </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </>
   )
 }

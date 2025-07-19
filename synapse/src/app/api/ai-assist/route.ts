@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/db"
-import { GeminiClient } from "@/lib/gemini-client"
+import { GrokClient } from "@/lib/grok-client"
 import { z } from "zod"
 
 const aiRequestSchema = z.object({
@@ -15,6 +15,12 @@ const aiRequestSchema = z.object({
     userKnowledge: z.array(z.string()).optional(),
     learningGoals: z.array(z.string()).optional(),
     timeAvailable: z.number().optional(),
+    isTeachingMode: z.boolean().optional(), // Added for teacher persona
+    complexity: z.enum(["brief", "moderate", "detailed"]).optional(),
+    learningHistory: z.array(z.string()).optional(),
+    currentTopic: z.string().optional(),
+    knowledgeGaps: z.array(z.string()).optional(),
+    currentKnowledge: z.array(z.string()).optional(),
   }),
 })
 
@@ -28,55 +34,54 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = aiRequestSchema.parse(body)
 
-    const geminiClient = new GeminiClient()
+    const grokClient = new GrokClient()
     let response: any
 
     switch (validatedData.type) {
       case "question":
-        response = await geminiClient.answerQuestion(
+        const context = `Context: ${validatedData.data.context || ""}\n\n` +
+          `User's Knowledge: ${validatedData.data.userKnowledge?.join(", ") || ""}\n` +
+          `Teaching Mode: ${validatedData.data.isTeachingMode ? 'Enabled' : 'Disabled'}`
+          
+        const answer = await grokClient.answerQuestion(
           validatedData.data.question || "",
-          validatedData.data.context || "",
-          validatedData.data.userKnowledge || [],
+          context
         )
+        
+        response = {
+          answer: answer,
+          sources: [], // Grok doesn't provide sources by default
+          type: 'answer'
+        }
         break
 
       case "summary":
-        response = await geminiClient.summarizeContent(
+        const summary = await grokClient.summarizeContent(
           validatedData.data.content || "",
-          validatedData.data.cognitiveState || "focused",
-          "moderate",
+          {
+            maxLength: validatedData.data.complexity === "brief" ? 100 :
+                      validatedData.data.complexity === "detailed" ? 400 : 200
+          }
         )
+        response = { summary }
         break
 
       case "recommendation":
-        // Get user's recent cognitive states and knowledge
-        const recentStates = await prisma.cognitiveState.findMany({
-          where: { userId: session.user.id },
-          orderBy: { createdAt: "desc" },
-          take: 10,
+        const recommendations = await grokClient.generatePersonalizedRecommendations({
+          userPreferences: validatedData.data.cognitiveState || "",
+          learningGoals: validatedData.data.knowledgeGaps || [],
+          pastInteractions: validatedData.data.learningHistory
         })
-
-        const knowledgeNodes = await prisma.knowledgeNode.findMany({
-          where: { userId: session.user.id },
-          orderBy: { lastEncounter: "desc" },
-          take: 20,
-        })
-
-        response = await geminiClient.generatePersonalizedRecommendations({
-          cognitiveState: recentStates[0]?.state || "focused",
-          learningHistory: knowledgeNodes.map((n: { concept: string }) => n.concept),
-          currentTopic: validatedData.data.context || "General Learning",
-          knowledgeGaps: validatedData.data.learningGoals || [],
-        })
+        response = { recommendations }
         break
 
       case "path":
-        response = await geminiClient.generateLearningPath(
-          validatedData.data.userKnowledge || [],
-          validatedData.data.learningGoals || [],
-          validatedData.data.timeAvailable || 10,
-          validatedData.data.cognitiveState || "focused",
-        )
+        const path = await grokClient.generateLearningPath({
+          topic: validatedData.data.currentTopic || "General Learning",
+          level: "intermediate", // Default level, could be made configurable
+          durationWeeks: Math.ceil((validatedData.data.timeAvailable || 10) / 5) // Convert hours to weeks (rough estimate)
+        })
+        response = { path }
         break
 
       default:

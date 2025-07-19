@@ -14,7 +14,7 @@ import {
   DialogActions,
   TextField,
   Chip,
-  Alert,
+  Alert, // Ensure Alert is imported
 } from "@mui/material"
 import { Timeline, Psychology, AutoAwesome, PlayArrow, Settings } from "@mui/icons-material"
 
@@ -24,10 +24,12 @@ export function QuickActions() {
   const [sessionTitle, setSessionTitle] = useState("")
   const [sessionGoals, setSessionGoals] = useState<string[]>([])
   const [currentGoal, setCurrentGoal] = useState("")
+  const [apiError, setApiError] = useState<string | null>(null) // New state for API errors
 
   const handleStartSession = async () => {
     if (!sessionTitle.trim()) return
 
+    setApiError(null) // Clear previous errors
     try {
       const response = await fetch("/api/sessions", {
         method: "POST",
@@ -38,12 +40,16 @@ export function QuickActions() {
         }),
       })
 
-      if (response.ok) {
-        const session = await response.json()
-        router.push(`/sessions/${session.id}`)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to start session.")
       }
-    } catch (error) {
+
+      const session = await response.json()
+      router.push(`/sessions/${session.id}`)
+    } catch (error: any) {
       console.error("Error starting session:", error)
+      setApiError(error.message || "An unexpected error occurred while starting the session.")
     }
   }
 
@@ -93,6 +99,11 @@ export function QuickActions() {
       <Dialog open={sessionDialogOpen} onClose={() => setSessionDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Start New Learning Session</DialogTitle>
         <DialogContent>
+          {apiError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {apiError}
+            </Alert>
+          )}
           <TextField
             autoFocus
             margin="dense"
