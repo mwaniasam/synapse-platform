@@ -1,0 +1,587 @@
+/* Synapse Content Adaptations with Advanced Features */
+
+:root {
+  --synapse-primary: #3b82f6;
+  --synapse-secondary: #8b5cf6;
+  --synapse-success: #10b981;
+  --synapse-warning: #f59e0b;
+  --synapse-danger: #ef4444;
+  --synapse-light: #f8fafc;
+  --synapse-dark: #1e293b;
+  --synapse-text-light: #1f2937;
+  --synapse-text-dark: #f1f5f9;
+}
+
+/* Theme Detection and Variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --synapse-bg: var(--synapse-dark);
+    --synapse-text: var(--synapse-text-dark);
+    --synapse-highlight-bg: rgba(139, 92, 246, 0.3);
+    --synapse-card-bg: rgba(30, 41, 59, 0.8);
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --synapse-bg: var(--synapse-light);
+    --synapse-text: var(--synapse-text-light);
+    --synapse-highlight-bg: rgba(251, 191, 36, 0.3);
+    --synapse-card-bg: rgba(248, 250, 252, 0.9);
+  }
+}
+
+/* Force theme modes */
+.synapse-dark-mode {
+  --synapse-bg: var(--synapse-dark) !important;
+  --synapse-text: var(--synapse-text-dark) !important;
+  --synapse-highlight-bg: rgba(139, 92, 246, 0.3) !important;
+  --synapse-card-bg: rgba(30, 41, 59, 0.8) !important;
+}
+
+.synapse-light-mode {
+  --synapse-bg: var(--synapse-light) !important;
+  --synapse-text: var(--synapse-text-light) !important;
+  --synapse-highlight-bg: rgba(251, 191, 36, 0.3) !important;
+  --synapse-card-bg: rgba(248, 250, 252, 0.9) !important;
+}
+
+/* Enhanced Keyword Highlighting */
+.synapse-highlight {
+  background: linear-gradient(120deg, var(--synapse-highlight-bg) 0%, transparent 100%);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+  position: relative;
+  cursor: pointer;
+}
+
+.synapse-highlight:hover {
+  border-color: var(--synapse-primary);
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.2);
+}
+
+.synapse-highlight::after {
+  content: attr(data-frequency);
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--synapse-primary);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.synapse-highlight:hover::after {
+  opacity: 1;
+}
+
+/* Advanced Reading Mode */
+.synapse-reading-mode {
+  line-height: 1.8 !important;
+  font-size: 17px !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  padding: 0 32px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Inter", "Helvetica Neue", Arial, sans-serif !important;
+  color: var(--synapse-text) !important;
+}
+
+.synapse-reading-mode p {
+  margin-bottom: 1.6em !important;
+  text-align: justify !important;
+  hyphens: auto !important;
+}
+
+.synapse-reading-mode h1,
+.synapse-reading-mode h2,
+.synapse-reading-mode h3,
+.synapse-reading-mode h4,
+.synapse-reading-mode h5,
+.synapse-reading-mode h6 {
+  margin-top: 2.5em !important;
+  margin-bottom: 1em !important;
+  font-weight: 600 !important;
+  color: var(--synapse-primary) !important;
+  line-height: 1.3 !important;
+}
+
+.synapse-reading-mode blockquote {
+  border-left: 4px solid var(--synapse-primary) !important;
+  padding-left: 20px !important;
+  margin: 1.5em 0 !important;
+  font-style: italic !important;
+  opacity: 0.9 !important;
+}
+
+.synapse-reading-mode code {
+  background: var(--synapse-highlight-bg) !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-family: "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace !important;
+}
+
+/* Activity-Based Adaptations */
+.synapse-low-activity .synapse-reading-mode,
+.synapse-idle .synapse-reading-mode {
+  font-size: 19px !important;
+  line-height: 2.0 !important;
+  letter-spacing: 0.5px !important;
+  word-spacing: 2px !important;
+}
+
+.synapse-high-activity .synapse-reading-mode {
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  letter-spacing: 0px !important;
+}
+
+/* Enhanced Distraction Reduction */
+.synapse-low-activity aside,
+.synapse-low-activity .sidebar,
+.synapse-low-activity .advertisement,
+.synapse-low-activity nav:not(.main-nav),
+.synapse-low-activity .social-share,
+.synapse-low-activity .comments,
+.synapse-idle aside,
+.synapse-idle .sidebar,
+.synapse-idle .advertisement,
+.synapse-idle nav:not(.main-nav),
+.synapse-idle .social-share,
+.synapse-idle .comments {
+  opacity: 0.15 !important;
+  filter: blur(2px) grayscale(50%) !important;
+  transition: all 0.5s ease !important;
+  pointer-events: none !important;
+}
+
+.synapse-low-activity aside:hover,
+.synapse-low-activity .sidebar:hover,
+.synapse-low-activity .advertisement:hover,
+.synapse-idle aside:hover,
+.synapse-idle .sidebar:hover,
+.synapse-idle .advertisement:hover {
+  opacity: 1 !important;
+  filter: blur(0) grayscale(0%) !important;
+  pointer-events: auto !important;
+}
+
+/* Focus Mode Enhancements */
+.synapse-focus-mode {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background: linear-gradient(90deg, var(--synapse-primary), var(--synapse-secondary)) !important;
+  z-index: 100001 !important;
+  opacity: 0 !important;
+  transition: opacity 0.3s ease !important;
+}
+
+.synapse-focus-mode.active {
+  opacity: 1 !important;
+  animation: focusPulse 3s ease-in-out infinite !important;
+}
+
+@keyframes focusPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.synapse-focus-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  z-index: 99999 !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: all 0.3s ease !important;
+}
+
+.synapse-focus-overlay.active {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Activity Indicator */
+.synapse-activity-indicator {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  background: var(--synapse-card-bg) !important;
+  color: var(--synapse-text) !important;
+  padding: 12px 16px !important;
+  border-radius: 25px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  z-index: 10000 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  border: 2px solid transparent !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(15px) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 120px !important;
+}
+
+.synapse-activity-indicator::before {
+  content: "" !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  background: currentColor !important;
+  animation: activityPulse 2s infinite !important;
+}
+
+@keyframes activityPulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.synapse-activity-indicator.high-activity {
+  border-color: var(--synapse-success) !important;
+  color: var(--synapse-success) !important;
+}
+
+.synapse-activity-indicator.medium-activity {
+  border-color: var(--synapse-warning) !important;
+  color: var(--synapse-warning) !important;
+}
+
+.synapse-activity-indicator.low-activity {
+  border-color: var(--synapse-danger) !important;
+  color: var(--synapse-danger) !important;
+}
+
+.synapse-activity-indicator.idle {
+  border-color: #6b7280 !important;
+  color: #6b7280 !important;
+}
+
+/* Typing Speed Indicator */
+.synapse-typing-indicator {
+  position: fixed !important;
+  top: 75px !important;
+  right: 20px !important;
+  background: var(--synapse-primary) !important;
+  color: white !important;
+  padding: 8px 14px !important;
+  border-radius: 20px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  z-index: 9999 !important;
+  font-family: "SF Mono", Monaco, monospace !important;
+  opacity: 0 !important;
+  transform: translateY(-10px) scale(0.9) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.synapse-typing-indicator.show {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+.synapse-typing-indicator::after {
+  content: " WPM" !important;
+  opacity: 0.8 !important;
+}
+
+/* Scroll Progress Indicator */
+.synapse-scroll-indicator {
+  position: fixed !important;
+  right: 20px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 6px !important;
+  height: 120px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 3px !important;
+  z-index: 9998 !important;
+  opacity: 0 !important;
+  transition: opacity 0.3s ease !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.synapse-scroll-indicator.show {
+  opacity: 1 !important;
+}
+
+.synapse-scroll-progress {
+  width: 100% !important;
+  background: linear-gradient(180deg, var(--synapse-primary), var(--synapse-secondary)) !important;
+  border-radius: 3px !important;
+  transition: height 0.1s ease !important;
+  height: 0% !important;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Productivity Alert Overlay */
+.synapse-alert-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  z-index: 100000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transition: all 0.3s ease !important;
+  backdrop-filter: blur(5px) !important;
+}
+
+.synapse-alert-overlay.show {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.synapse-alert-content {
+  background: var(--synapse-card-bg) !important;
+  color: var(--synapse-text) !important;
+  padding: 40px !important;
+  border-radius: 20px !important;
+  max-width: 450px !important;
+  text-align: center !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3) !important;
+  transform: scale(0.9) !important;
+  transition: transform 0.3s ease !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.synapse-alert-overlay.show .synapse-alert-content {
+  transform: scale(1) !important;
+}
+
+.synapse-alert-icon {
+  font-size: 48px !important;
+  margin-bottom: 20px !important;
+}
+
+.synapse-alert-title {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  margin-bottom: 15px !important;
+  color: var(--synapse-warning) !important;
+}
+
+.synapse-alert-message {
+  font-size: 16px !important;
+  line-height: 1.6 !important;
+  margin-bottom: 30px !important;
+  opacity: 0.9 !important;
+}
+
+.synapse-alert-buttons {
+  display: flex !important;
+  gap: 15px !important;
+  justify-content: center !important;
+}
+
+.synapse-alert-btn {
+  padding: 12px 24px !important;
+  border: none !important;
+  border-radius: 10px !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+  min-width: 120px !important;
+}
+
+.synapse-alert-btn.primary {
+  background: linear-gradient(45deg, var(--synapse-primary), var(--synapse-secondary)) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+.synapse-alert-btn.primary:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+.synapse-alert-btn.secondary {
+  background: transparent !important;
+  color: var(--synapse-text) !important;
+  border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.synapse-alert-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Concept Tooltip */
+.synapse-concept-tooltip {
+  position: absolute !important;
+  background: var(--synapse-card-bg) !important;
+  color: var(--synapse-text) !important;
+  padding: 12px 16px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+  z-index: 10001 !important;
+  opacity: 0 !important;
+  transform: translateY(10px) !important;
+  transition: all 0.2s ease !important;
+  pointer-events: none !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  max-width: 200px !important;
+}
+
+.synapse-concept-tooltip.show {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.synapse-concept-tooltip::before {
+  content: "" !important;
+  position: absolute !important;
+  top: -6px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-left: 6px solid transparent !important;
+  border-right: 6px solid transparent !important;
+  border-bottom: 6px solid var(--synapse-card-bg) !important;
+}
+
+/* Reading Progress Bar */
+.synapse-reading-progress {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 0% !important;
+  height: 3px !important;
+  background: linear-gradient(90deg, var(--synapse-primary), var(--synapse-secondary)) !important;
+  z-index: 100000 !important;
+  transition: width 0.1s ease !important;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .synapse-activity-indicator {
+    top: 10px !important;
+    right: 10px !important;
+    padding: 8px 12px !important;
+    font-size: 11px !important;
+    min-width: 100px !important;
+  }
+
+  .synapse-typing-indicator {
+    top: 55px !important;
+    right: 10px !important;
+    font-size: 10px !important;
+    padding: 6px 10px !important;
+  }
+
+  .synapse-alert-content {
+    margin: 20px !important;
+    padding: 30px 25px !important;
+    max-width: calc(100vw - 40px) !important;
+  }
+
+  .synapse-alert-title {
+    font-size: 20px !important;
+  }
+
+  .synapse-alert-message {
+    font-size: 14px !important;
+  }
+
+  .synapse-alert-buttons {
+    flex-direction: column !important;
+  }
+
+  .synapse-scroll-indicator {
+    right: 10px !important;
+    width: 4px !important;
+    height: 80px !important;
+  }
+
+  .synapse-reading-mode {
+    padding: 0 20px !important;
+    font-size: 16px !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .synapse-activity-indicator,
+  .synapse-typing-indicator,
+  .synapse-scroll-indicator,
+  .synapse-alert-overlay,
+  .synapse-focus-mode {
+    display: none !important;
+  }
+
+  .synapse-highlight {
+    background: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .synapse-highlight {
+    background: #000 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+  }
+
+  .synapse-activity-indicator {
+    border-width: 3px !important;
+    font-weight: 700 !important;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .synapse-highlight,
+  .synapse-activity-indicator,
+  .synapse-typing-indicator,
+  .synapse-scroll-indicator,
+  .synapse-alert-overlay,
+  .synapse-alert-content,
+  .synapse-concept-tooltip {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .synapse-activity-indicator::before {
+    animation: none !important;
+  }
+}
