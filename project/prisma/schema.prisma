@@ -1,0 +1,203 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                String    @id @default(cuid())
+  name              String?
+  email             String    @unique
+  password          String?
+  emailVerified     DateTime?
+  image             String?
+  role              Role      @default(USER)
+  bio               String?
+  learningGoals     String?
+  preferredSubjects String[]  @default([])
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  accounts          Account[]
+  sessions          Session[]
+  userSettings      UserSettings?
+  learningProgress  LearningProgress[]
+  bookmarks         Bookmark[]
+  pomodoroSessions  PomodoroSession[]
+  cognitiveData     CognitiveData[]
+  knowledgeNodes    KnowledgeNode[]
+}
+
+model UserSettings {
+  id                    String  @id @default(cuid())
+  userId                String  @unique
+  user                  User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Pomodoro Settings
+  workDuration          Int     @default(25)
+  shortBreakDuration    Int     @default(5)
+  longBreakDuration     Int     @default(15)
+  sessionsUntilLongBreak Int    @default(4)
+  
+  // Learning Settings
+  dailyGoal             Int     @default(4)
+  difficultyLevel       String  @default("intermediate")
+  adaptiveMode          Boolean @default(true)
+  
+  // Preferences
+  theme                 String  @default("system")
+  notifications         Boolean @default(true)
+  soundEnabled          Boolean @default(true)
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model LearningResource {
+  id                String    @id @default(cuid())
+  title             String
+  description       String?
+  content           String    @db.Text
+  subject           String
+  difficultyLevel   String
+  format            String
+  url               String?
+  tags              String[]
+  featured          Boolean   @default(false)
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  bookmarks         Bookmark[]
+  progress          LearningProgress[]
+}
+
+model Bookmark {
+  id         String           @id @default(cuid())
+  userId     String
+  resourceId String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource   LearningResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  createdAt  DateTime         @default(now())
+  
+  @@unique([userId, resourceId])
+}
+
+model LearningProgress {
+  id                String           @id @default(cuid())
+  userId            String
+  resourceId        String
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource          LearningResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  
+  progress          Float            @default(0)
+  completed         Boolean          @default(false)
+  timeSpent         Int              @default(0)
+  comprehensionScore Float?
+  
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  
+  @@unique([userId, resourceId])
+}
+
+model PomodoroSession {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type            String    // work, short_break, long_break
+  duration        Int
+  completed       Boolean   @default(false)
+  focusScore      Float?
+  
+  createdAt       DateTime  @default(now())
+  completedAt     DateTime?
+}
+
+model CognitiveData {
+  id                  String   @id @default(cuid())
+  userId              String
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Game-based assessment data
+  gameType            String   // stroop-test, n-back, attention-network, cognitive-battery
+  gameResults         Json     // Raw game performance data
+  sessionDuration     Int      // Duration in seconds
+  
+  // Computed cognitive metrics
+  cognitiveState      String   // highly-focused, focused, moderate-focus, low-focus, fatigued
+  focusLevel          Float    @default(0)
+  attentionSpan       Float    @default(0)
+  processingSpeed     Float    @default(0)
+  memoryPerformance   Float    @default(0)
+  decisionMaking      Float    @default(0)
+  overallScore        Float    @default(0)
+  
+  // Recommendations
+  recommendations     Json?
+  
+  // Legacy fields (kept for compatibility)
+  sessionType         String?  // learning, assessment, practice
+  attentionLevel      Float?
+  comprehensionRate   Float?
+  responseTime        Float?
+  accuracyScore       Float?
+  cognitiveLoad       Float?
+  metadata            Json?
+  
+  timestamp           DateTime @default(now())
+  createdAt           DateTime @default(now())
+}
+
+model KnowledgeNode {
+  id            String            @id @default(cuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  concept       String
+  subject       String
+  masteryLevel  Float             @default(0)
+  connections   String[]
+  
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
