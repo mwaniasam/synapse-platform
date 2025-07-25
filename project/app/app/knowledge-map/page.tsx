@@ -41,7 +41,7 @@ export default function KnowledgeMapPage() {
   }
 
   const getSubjectStats = () => {
-    const subjects = [...new Set(knowledgeNodes.map(n => n.subject))]
+    const subjects = Array.from(new Set(knowledgeNodes.map(n => n.subject)))
     if (subjects.length === 0) return []
     return subjects.map(subject => {
       const subjectNodes = knowledgeNodes.filter(n => n.subject === subject)
