@@ -119,7 +119,7 @@ export default function Dashboard() {
                 <div className="w-10 h-10 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
                   <Target className="h-5 w-5 text-green-600" />
                 </div>
-                Today's Goal
+                Today&apos;s Goal
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">

@@ -20,6 +20,13 @@ interface KnowledgeNode {
 
 export default function KnowledgeMapPage() {
   const { data: session, status } = useSession()
+  
+  // Mock knowledge nodes - would come from user's learning data
+  const [knowledgeNodes] = useState<KnowledgeNode[]>([
+    // Empty array - knowledge nodes will be built from user's learning progress
+  ])
+
+  const [selectedNode, setSelectedNode] = useState<KnowledgeNode | null>(null)
 
   if (status === "loading") {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>
@@ -28,13 +35,6 @@ export default function KnowledgeMapPage() {
   if (!session) {
     redirect("/auth/signin")
   }
-
-  // Mock knowledge nodes - would come from user's learning data
-  const [knowledgeNodes] = useState<KnowledgeNode[]>([
-    // Empty array - knowledge nodes will be built from user's learning progress
-  ])
-
-  const [selectedNode, setSelectedNode] = useState<KnowledgeNode | null>(null)
 
   const handleNodeClick = (node: KnowledgeNode) => {
     setSelectedNode(node)

@@ -270,10 +270,10 @@ export function NBackTest({ onComplete }: NBackTestProps) {
           <div className="bg-muted/50 p-4 rounded-lg">
             <h4 className="font-semibold mb-2">Instructions:</h4>
             <ul className="space-y-2 text-sm">
-              <li>• You'll see squares light up one at a time in a 3x3 grid</li>
-              <li>• Your task: Press "Target" if the current square is in the same position as <strong>{nLevel} steps back</strong></li>
-              <li>• Press "No Target" if it's in a different position</li>
-              <li>• For example: If position 3 appears, then 2 trials later position 3 appears again, that's a target</li>
+              <li>• You&apos;ll see squares light up one at a time in a 3x3 grid</li>
+              <li>• Your task: Press &quot;Target&quot; if the current square is in the same position as <strong>{nLevel} steps back</strong></li>
+              <li>• Press &quot;No Target&quot; if it&apos;s in a different position</li>
+              <li>• For example: If position 3 appears, then 2 trials later position 3 appears again, that&apos;s a target</li>
               <li>• React quickly but accurately - each square shows for only 0.5 seconds</li>
             </ul>
           </div>

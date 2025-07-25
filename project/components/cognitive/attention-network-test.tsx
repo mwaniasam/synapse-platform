@@ -364,7 +364,7 @@ export function AttentionNetworkTest({ onComplete }: AttentionNetworkTestProps) 
               <li>• Press the left arrow key if the center arrow points ←</li>
               <li>• Press the right arrow key if the center arrow points →</li>
               <li>• Ignore the surrounding arrows - focus only on the center one</li>
-              <li>• Sometimes you'll see cues (yellow boxes) before the arrows</li>
+              <li>• Sometimes you&apos;ll see cues (yellow boxes) before the arrows</li>
               <li>• Respond as quickly and accurately as possible</li>
             </ul>
           </div>

@@ -298,7 +298,7 @@ export default function ResourcesPage() {
 
         {filters.search && (
           <Badge variant="outline">
-            Searching for: "{filters.search}"
+            Searching for: &quot;{filters.search}&quot;
           </Badge>
         )}
       </div>

@@ -96,7 +96,7 @@ export default function PomodoroPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="h-5 w-5" />
-                Today's Progress
+                Today&apos;s Progress
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">

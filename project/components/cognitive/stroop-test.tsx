@@ -166,16 +166,16 @@ export function StroopTest({ onComplete }: StroopTestProps) {
             <h3 className="text-xl font-semibold mb-3">Test Your Attention & Processing Speed</h3>
             <p className="text-muted-foreground mb-6">
               This test measures your cognitive flexibility and attention control. 
-              You'll see color words displayed in different colors.
+              You&apos;ll see color words displayed in different colors.
             </p>
           </div>
           
           <div className="bg-muted/50 p-4 rounded-lg">
             <h4 className="font-semibold mb-2">Instructions:</h4>
             <ul className="space-y-2 text-sm">
-              <li>• You'll see words like "RED" or "BLUE" displayed in various colors</li>
+              <li>• You&apos;ll see words like &quot;RED&quot; or &quot;BLUE&quot; displayed in various colors</li>
               <li>• <strong>Click the color the word is displayed in, NOT what the word says</strong></li>
-              <li>• For example: If you see <span className="text-red-500 font-bold">BLUE</span>, click "Red"</li>
+              <li>• For example: If you see <span className="text-red-500 font-bold">BLUE</span>, click &quot;Red&quot;</li>
               <li>• Work as quickly and accurately as possible</li>
               <li>• There will be {TOTAL_TRIALS} trials</li>
             </ul>
