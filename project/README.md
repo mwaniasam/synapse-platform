@@ -37,11 +37,15 @@ Synapse Platform is a comprehensive adaptive learning ecosystem that leverages c
 - **Bookmark System**: Save and organize favorite learning resources
 - **Achievement System**: Goal setting and milestone tracking
 
+![Learning Resources Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753428737/bpcnfgchyslkoe7y240k.jpg)
+
 ### ⏱️ Productivity & Focus Tools
 - **Intelligent Pomodoro Timer**: Customizable work/break intervals with cognitive optimization
 - **Focus Analytics**: Track concentration patterns and productivity metrics
 - **Session Management**: Monitor work sessions with detailed performance insights
 - **Adaptive Break Recommendations**: AI-suggested break durations based on cognitive load
+
+![Pomodoro Timer Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753428843/o8qpwi0smtgb0ll1aecb.jpg)
 
 ### 🗺️ Knowledge Mapping & Visualization
 - **Interactive Knowledge Graph**: Visual representation of learning connections and dependencies
@@ -76,20 +80,14 @@ Before you begin, ensure you have the following installed on your system:
 ### Step 1: Clone the Repository
 
 ```bash
-# Clone the repository
 git clone https://github.com/your-username/synapse-platform.git
-
-# Navigate to the project directory
 cd synapse-platform
 ```
 
 ### Step 2: Install Dependencies
 
 ```bash
-# Install all required dependencies
 npm install
-
-# Or using yarn
 yarn install
 ```
 
@@ -98,24 +96,16 @@ yarn install
 Create a `.env.local` file in the root directory:
 
 ```bash
-# Copy the example environment file
 cp .env.example .env.local
 ```
 
 Edit `.env.local` and configure the following variables:
 
 ```env
-# Database Configuration
 DATABASE_URL="postgresql://username:password@localhost:5432/synapse_db"
-
-# NextAuth Configuration
 NEXTAUTH_SECRET="your-super-secret-key-here"
 NEXTAUTH_URL="http://localhost:3000"
-
-# Google AI Configuration (for content generation)
 GEMINI_API_KEY="your-google-ai-api-key"
-
-# Optional: Additional configurations
 NODE_ENV="development"
 ```
 
@@ -132,25 +122,15 @@ NODE_ENV="development"
 
 1. **Install PostgreSQL** (if not already installed)
    ```bash
-   # On Windows (using Chocolatey)
    choco install postgresql
-
-   # On macOS (using Homebrew)
    brew install postgresql
-
-   # On Ubuntu/Debian
    sudo apt-get install postgresql postgresql-contrib
    ```
 
 2. **Create a new database:**
    ```sql
-   # Connect to PostgreSQL
    psql -U postgres
-
-   # Create database
    CREATE DATABASE synapse_db;
-
-   # Create user (optional)
    CREATE USER synapse_user WITH PASSWORD 'your_password';
    GRANT ALL PRIVILEGES ON DATABASE synapse_db TO synapse_user;
    ```
@@ -172,26 +152,16 @@ NODE_ENV="development"
 ### Step 5: Database Migration and Setup
 
 ```bash
-# Generate Prisma client
 npx prisma generate
-
-# Push the database schema
 npx prisma db push
-
-# Optional: Seed the database with sample data
 npx prisma db seed
-
-# Optional: Open Prisma Studio to view your database
 npx prisma studio
 ```
 
 ### Step 6: Run the Development Server
 
 ```bash
-# Start the development server
 npm run dev
-
-# Or using yarn
 yarn dev
 ```
 
@@ -217,34 +187,34 @@ yarn dev
 
 ```
 synapse-platform/
-├── 📱 app/                     # Next.js App Router
-│   ├── 🔌 api/                # Backend API routes
-│   │   ├── 🤖 ai/             # AI content generation
-│   │   ├── 🔐 auth/           # Authentication endpoints
-│   │   ├── 🧠 cognitive/      # Cognitive assessment APIs
-│   │   └── 👤 user/           # User management APIs
-│   ├── 🔐 auth/               # Authentication pages
-│   ├── 📊 dashboard/          # Main dashboard
-│   ├── 🧠 cognitive/          # Cognitive assessment pages
-│   ├── ⚙️ settings/           # User settings
-│   └── 📱 app/                # Protected application pages
-│       ├── 🗺️ knowledge-map/  # Knowledge visualization
-│       ├── ⏱️ pomodoro/       # Productivity timer
-│       └── 📚 resources/      # Learning materials
-├── 🧩 components/             # Reusable React components
-│   ├── 🎨 ui/                # shadcn/ui components
-│   ├── 📊 dashboard/         # Dashboard-specific components
-│   ├── 🧠 cognitive/         # Cognitive test components
-│   ├── ⏱️ pomodoro/          # Timer components
-│   ├── 📚 resources/         # Resource management
-│   ├── 🗺️ knowledge-map/     # Knowledge graph components
-│   ├── 🎭 animations/        # UI animations
-│   ├── 🔧 providers/         # React context providers
-│   └── 📐 layout/            # Layout components
-├── 🎣 hooks/                  # Custom React hooks
-├── 📚 lib/                    # Utility functions & configs
-├── 🗄️ prisma/                # Database schema & migrations
-└── 📝 types/                  # TypeScript type definitions
+├── 📱 app/
+│   ├── 🔌 api/
+│   │   ├── 🤖 ai/
+│   │   ├── 🔐 auth/
+│   │   ├── 🧠 cognitive/
+│   │   └── 👤 user/
+│   ├── 🔐 auth/
+│   ├── 📊 dashboard/
+│   ├── 🧠 cognitive/
+│   ├── ⚙️ settings/
+│   └── 📱 app/
+│       ├── 🗺️ knowledge-map/
+│       ├── ⏱️ pomodoro/
+│       └── 📚 resources/
+├── 🧩 components/
+│   ├── 🎨 ui/
+│   ├── 📊 dashboard/
+│   ├── 🧠 cognitive/
+│   ├── ⏱️ pomodoro/
+│   ├── 📚 resources/
+│   ├── 🗺️ knowledge-map/
+│   ├── 🎭 animations/
+│   ├── 🔧 providers/
+│   └── 📐 layout/
+├── 🎣 hooks/
+├── 📚 lib/
+├── 🗄️ prisma/
+└── 📝 types/
 ```
 
 ### Core Technologies
@@ -306,7 +276,7 @@ openssl rand -base64 32
 Add the generated secret to your `.env.local`:
 ```env
 NEXTAUTH_SECRET="your-generated-secret"
-NEXTAUTH_URL="http://localhost:3000"  # Update for production
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ### AI Integration Configuration
@@ -314,20 +284,14 @@ NEXTAUTH_URL="http://localhost:3000"  # Update for production
 For AI-powered content generation, configure your Google AI API key:
 
 ```env
-# Google AI (Gemini) Configuration
 GEMINI_API_KEY="your-google-ai-api-key"
 ```
 
 ### Optional Environment Variables
 
 ```env
-# Development/Production Mode
 NODE_ENV="development"
-
-# Logging Level
 LOG_LEVEL="info"
-
-# Feature Flags
 ENABLE_AI_FEATURES="true"
 ENABLE_COGNITIVE_TESTS="true"
 ENABLE_ANALYTICS="true"
@@ -344,6 +308,8 @@ ENABLE_ANALYTICS="true"
 - **Cognitive Performance Analytics**: Track focus levels, processing speed, memory, and decision-making
 - **Adaptive Content Delivery**: Learning materials adjust based on cognitive state
 - **Personalized Recommendations**: AI-driven suggestions for optimal learning strategies
+
+![Cognitive Assessment Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753428792/jkhonstcltubxg1ys95i.jpg)
 
 ### 2. 🤖 AI-Powered Content Generation & Personalization
 - **Google Gemini Integration**: Advanced AI for dynamic educational content creation
@@ -387,13 +353,14 @@ ENABLE_ANALYTICS="true"
 - **Progress Reports & Exports**: Detailed reports on learning progress, achievements, and performance
 - **Data-driven Recommendations**: Personalized suggestions based on learning patterns and performance
 
+![Learning Dashboard](https://res.cloudinary.com/dtjjgiitl/image/upload/q_auto:good,f_auto,fl_progressive/v1753428667/nmpvgfb01xdcrxiqy6qg.jpg)
+
 ## 🚀 Deployment
 
 ### Production Deployment with Vercel (Recommended)
 
 1. **Prepare your repository:**
    ```bash
-   # Ensure all changes are committed
    git add .
    git commit -m "Prepare for deployment"
    git push origin main
@@ -413,7 +380,6 @@ ENABLE_ANALYTICS="true"
 
 3. **Database Setup for Production:**
    ```bash
-   # For production database, run migrations
    npx prisma db push
    ```
 
@@ -436,13 +402,11 @@ CMD ["npm", "start"]
 
 #### Manual VPS Deployment
 ```bash
-# Clone and setup on your server
 git clone https://github.com/your-username/synapse-platform.git
 cd synapse-platform
 npm install
 npm run build
 
-# Use PM2 for process management
 npm install -g pm2
 pm2 start npm --name "synapse-platform" -- start
 ```
@@ -450,17 +414,10 @@ pm2 start npm --name "synapse-platform" -- start
 ### Environment Variables for Production
 
 ```env
-# Production Database (use connection pooling)
 DATABASE_URL="postgresql://user:pass@host:5432/db?connection_limit=10&pool_timeout=20"
-
-# Production Auth
 NEXTAUTH_SECRET="your-super-secure-production-secret"
 NEXTAUTH_URL="https://your-domain.com"
-
-# Google AI
 GEMINI_API_KEY="your-production-google-ai-key"
-
-# Production optimizations
 NODE_ENV="production"
 ```
 
@@ -502,42 +459,25 @@ NODE_ENV="production"
 
 #### Database Management Commands
 ```bash
-# View database in browser
 npx prisma studio
-
-# Reset database (development only)
 npx prisma migrate reset
-
-# Deploy migrations to production
 npx prisma migrate deploy
-
-# Generate database client
 npx prisma generate
 ```
 
 ### Code Quality & Linting
 
 ```bash
-# Run ESLint
 npm run lint
-
-# Fix linting issues automatically
 npm run lint -- --fix
-
-# Type checking
 npx tsc --noEmit
 ```
 
 ### Testing Workflow
 
 ```bash
-# Run all tests
 npm test
-
-# Run tests in watch mode
 npm run test:watch
-
-# Run specific test file
 npm test -- components/cognitive/stroop-test.test.tsx
 ```
 
@@ -589,38 +529,34 @@ Brief description of changes
 
 ### Authentication Endpoints
 ```typescript
-// User Authentication
-POST   /api/auth/register        // User registration
-POST   /api/auth/signin          // User sign in
-POST   /api/auth/signout         // User sign out
-GET    /api/auth/session         // Get current session
+POST   /api/auth/register
+POST   /api/auth/signin
+POST   /api/auth/signout
+GET    /api/auth/session
 ```
 
 ### User Management
 ```typescript
-// User Profile & Settings
-GET    /api/user/profile         // Get user profile
-PUT    /api/user/profile         // Update user profile
-DELETE /api/user/delete          // Delete user account
-GET    /api/user/settings        // Get user settings
-PUT    /api/user/settings        // Update user settings
+GET    /api/user/profile
+PUT    /api/user/profile
+DELETE /api/user/delete
+GET    /api/user/settings
+PUT    /api/user/settings
 ```
 
 ### Cognitive Assessment
 ```typescript
-// Cognitive Testing & Analysis
-POST   /api/cognitive/assess     // Submit cognitive test results
-GET    /api/cognitive/history    // Get assessment history
-GET    /api/cognitive/analytics  // Get cognitive analytics
-POST   /api/cognitive/stroop     // Submit Stroop test results
-POST   /api/cognitive/nback      // Submit N-Back test results
-POST   /api/cognitive/attention  // Submit Attention test results
+POST   /api/cognitive/assess
+GET    /api/cognitive/history
+GET    /api/cognitive/analytics
+POST   /api/cognitive/stroop
+POST   /api/cognitive/nback
+POST   /api/cognitive/attention
 ```
 
 ### AI Content Generation
 ```typescript
-// AI-Powered Content
-POST   /api/ai/generate-content  // Generate educational content
+POST   /api/ai/generate-content
 Body: {
   topic: string
   subject: string
@@ -630,32 +566,29 @@ Body: {
 
 ### Learning Resources
 ```typescript
-// Resource Management
-GET    /api/resources            // Get learning resources
-POST   /api/resources            // Create new resource
-PUT    /api/resources/:id        // Update resource
-DELETE /api/resources/:id        // Delete resource
-POST   /api/resources/bookmark   // Bookmark resource
-DELETE /api/resources/bookmark   // Remove bookmark
-PUT    /api/resources/progress   // Update learning progress
+GET    /api/resources
+POST   /api/resources
+PUT    /api/resources/:id
+DELETE /api/resources/:id
+POST   /api/resources/bookmark
+DELETE /api/resources/bookmark
+PUT    /api/resources/progress
 ```
 
 ### Analytics & Progress
 ```typescript
-// Learning Analytics
-GET    /api/analytics/dashboard  // Get dashboard analytics
-GET    /api/analytics/progress   // Get detailed progress
-GET    /api/analytics/cognitive  // Get cognitive analytics
-GET    /api/analytics/productivity // Get productivity metrics
+GET    /api/analytics/dashboard
+GET    /api/analytics/progress
+GET    /api/analytics/cognitive
+GET    /api/analytics/productivity
 ```
 
 ### Pomodoro & Productivity
 ```typescript
-// Productivity Tracking
-POST   /api/pomodoro/session     // Create pomodoro session
-PUT    /api/pomodoro/session/:id // Update session
-GET    /api/pomodoro/history     // Get session history
-GET    /api/pomodoro/analytics   // Get productivity analytics
+POST   /api/pomodoro/session
+PUT    /api/pomodoro/session/:id
+GET    /api/pomodoro/history
+GET    /api/pomodoro/analytics
 ```
 
 ## 🎨 Customization & Theming
@@ -686,7 +619,6 @@ module.exports = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
-        // Add custom colors for cognitive states
         cognitive: {
           "highly-focused": "hsl(142, 76%, 36%)",
           "focused": "hsl(158, 64%, 52%)",
@@ -710,7 +642,6 @@ Update CSS custom properties in `app/globals.css`:
   --foreground: 222.2 84% 4.9%;
   --primary: 222.2 47.4% 11.2%;
   --primary-foreground: 210 40% 98%;
-  /* Add custom cognitive state colors */
   --cognitive-excellent: 142 76% 36%;
   --cognitive-good: 158 64% 52%;
   --cognitive-average: 45 93% 47%;
@@ -721,7 +652,6 @@ Update CSS custom properties in `app/globals.css`:
 [data-theme="dark"] {
   --background: 222.2 84% 4.9%;
   --foreground: 210 40% 98%;
-  /* Dark theme cognitive colors */
   --cognitive-excellent: 142 70% 45%;
   --cognitive-good: 158 60% 60%;
 }
@@ -734,7 +664,6 @@ Update CSS custom properties in `app/globals.css`:
 All UI components are located in `components/ui/` and can be customized:
 
 ```typescript
-// components/ui/custom-button.tsx
 import { cn } from "@/lib/utils"
 import { Button, ButtonProps } from "@/components/ui/button"
 
@@ -766,7 +695,6 @@ export function CustomButton({
 Implement adaptive styling based on cognitive state:
 
 ```typescript
-// hooks/use-cognitive-styling.ts
 export function useCognitiveStateClass(state: string) {
   const stateMap = {
     "highly-focused": "border-green-500 bg-green-50",
@@ -785,7 +713,6 @@ export function useCognitiveStateClass(state: string) {
 Modify animations in `components/animations/`:
 
 ```typescript
-// components/animations/custom-brain-animation.tsx
 import { motion } from "framer-motion"
 
 export function CustomBrainAnimation({ cognitiveState }: { cognitiveState: string }) {
@@ -825,26 +752,16 @@ export function CustomBrainAnimation({ cognitiveState }: { cognitiveState: strin
 
 **Problem**: `Error: P1001: Can't reach database server`
 ```bash
-# Solution 1: Check if PostgreSQL is running
-# Windows
 net start postgresql-x64-13
-
-# macOS
 brew services start postgresql
-
-# Linux
 sudo systemctl start postgresql
 
-# Solution 2: Verify DATABASE_URL format
 DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
 ```
 
 **Problem**: `Error: P3009: migrate found failed migration`
 ```bash
-# Reset database (development only)
 npx prisma migrate reset
-
-# Or manually fix migrations
 npx prisma db push --force-reset
 ```
 
@@ -852,18 +769,15 @@ npx prisma db push --force-reset
 
 **Problem**: `Error: NEXTAUTH_SECRET is not set`
 ```bash
-# Generate a secure secret
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
-# Add to .env.local
 NEXTAUTH_SECRET="your-generated-secret"
 ```
 
 **Problem**: `Error: NEXTAUTH_URL is invalid`
 ```env
-# Ensure correct URL format
-NEXTAUTH_URL="http://localhost:3000"  # Development
-NEXTAUTH_URL="https://your-domain.com"  # Production
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_URL="https://your-domain.com"
 ```
 
 #### 🤖 AI Integration Issues
@@ -875,13 +789,11 @@ NEXTAUTH_URL="https://your-domain.com"  # Production
 
 **Problem**: AI content generation is slow
 ```typescript
-// Optimize API calls with timeout
 const controller = new AbortController();
 const timeoutId = setTimeout(() => controller.abort(), 10000);
 
 const response = await fetch('/api/ai/generate-content', {
   signal: controller.signal,
-  // ... other options
 });
 ```
 
@@ -889,21 +801,17 @@ const response = await fetch('/api/ai/generate-content', {
 
 **Problem**: Slow page loading
 ```bash
-# Analyze bundle size
 npm run build
 npm run analyze
 
-# Optimize images and assets
-# Use Next.js Image component
 import Image from 'next/image'
 ```
 
 **Problem**: Memory leaks in cognitive tests
 ```typescript
-// Cleanup intervals and timeouts
 useEffect(() => {
   const interval = setInterval(() => {
-    // Your code
+    
   }, 1000);
 
   return () => {
@@ -916,27 +824,21 @@ useEffect(() => {
 
 #### Development Environment
 ```bash
-# Clear Next.js cache
 rm -rf .next
 
-# Reinstall dependencies
 rm -rf node_modules package-lock.json
 npm install
 
-# Reset development database
 npx prisma migrate reset
 npx prisma db push
 ```
 
 #### Production Environment
 ```bash
-# Build issues
 NODE_ENV=production npm run build
 
-# Database connection pooling
 DATABASE_URL="postgresql://user:pass@host:5432/db?connection_limit=10"
 
-# Memory optimization
 NODE_OPTIONS="--max-old-space-size=4096" npm start
 ```
 
@@ -945,14 +847,13 @@ NODE_OPTIONS="--max-old-space-size=4096" npm start
 #### Q: How do I add new cognitive tests?
 ```typescript
 // 1. Create test component in components/cognitive/
-// 2. Add test route to prisma schema
+// 2. Add test route to prisma schema  
 // 3. Create API endpoint in app/api/cognitive/
 // 4. Update cognitive assessment logic
 ```
 
 #### Q: How do I customize the AI content generation?
 ```typescript
-// Modify the prompt in app/api/ai/generate-content/route.ts
 const prompt = `
   Create educational content about "${topic}" in "${subject}" 
   at "${difficulty}" level with these requirements:
@@ -964,26 +865,19 @@ const prompt = `
 
 #### Q: How do I add new subjects or categories?
 ```sql
--- Update the enum in prisma/schema.prisma
 enum Subject {
   MATH
   SCIENCE
   HISTORY
   LANGUAGE
   TECHNOLOGY
-  // Add new subjects here
 }
 ```
 
 #### Q: How do I backup and restore data?
 ```bash
-# Backup database
 pg_dump your_database_name > backup.sql
-
-# Restore database
 psql your_database_name < backup.sql
-
-# Export user data (custom script needed)
 npm run export-user-data
 ```
 
@@ -998,14 +892,9 @@ npm run export-user-data
 #### Support Channels
 - 🐛 [Report Issues](https://github.com/your-repo/issues)
 - 💬 [Discussions](https://github.com/your-repo/discussions)
-- 📧 [Email Support](mailto:support@synapse-platform.com)
-- 💾 [Discord Community](https://discord.gg/your-invite)
 
 #### Development Resources
 - 🔍 [API Reference](https://your-docs-site.com/api)
-- 📖 [Developer Guide](https://your-docs-site.com/dev-guide)
-- 🎥 [Video Tutorials](https://youtube.com/your-channel)
-- 📝 [Blog Posts](https://blog.synapse-platform.com)
 
 ## � Performance & Scalability
 
@@ -1013,7 +902,6 @@ npm run export-user-data
 
 #### Database Optimization
 ```sql
--- Add database indexes for better query performance
 CREATE INDEX idx_user_id_cognitive_data ON "CognitiveData"("userId");
 CREATE INDEX idx_user_id_learning_progress ON "LearningProgress"("userId");
 CREATE INDEX idx_resource_subject ON "LearningResource"("subject");
@@ -1022,7 +910,6 @@ CREATE INDEX idx_created_at_sessions ON "PomodoroSession"("createdAt");
 
 #### Caching Strategy
 ```typescript
-// Implement Redis caching for frequent queries
 import { Redis } from '@upstash/redis'
 
 const redis = new Redis({
@@ -1030,21 +917,18 @@ const redis = new Redis({
   token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 })
 
-// Cache user cognitive state
 export async function getCachedCognitiveState(userId: string) {
   const cached = await redis.get(`cognitive:${userId}`)
   if (cached) return cached
   
-  // Fetch from database and cache
   const state = await fetchCognitiveState(userId)
-  await redis.setex(`cognitive:${userId}`, 300, state) // 5 min cache
+  await redis.setex(`cognitive:${userId}`, 300, state)
   return state
 }
 ```
 
 #### Code Splitting & Lazy Loading
 ```typescript
-// Lazy load heavy components
 import dynamic from 'next/dynamic'
 
 const CognitiveTestSuite = dynamic(
@@ -1065,21 +949,18 @@ const KnowledgeGraph = dynamic(
 
 #### Database Scaling
 ```typescript
-// Connection pooling for high traffic
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL") // For migrations
+  directUrl = env("DIRECT_URL")
 }
 
-// Environment variables for connection pooling
 DATABASE_URL="postgresql://user:pass@host:5432/db?pgbouncer=true&connection_limit=10"
 DIRECT_URL="postgresql://user:pass@host:5432/db"
 ```
 
 #### API Rate Limiting
 ```typescript
-// Implement rate limiting for API routes
 import { Ratelimit } from "@upstash/ratelimit"
 
 const ratelimit = new Ratelimit({
@@ -1094,14 +975,11 @@ export async function POST(request: Request) {
   if (!success) {
     return new Response("Rate limit exceeded", { status: 429 })
   }
-  
-  // Continue with API logic
 }
 ```
 
 #### CDN & Asset Optimization
 ```typescript
-// next.config.js optimizations
 module.exports = {
   images: {
     domains: ['your-cdn-domain.com'],
@@ -1119,19 +997,13 @@ module.exports = {
 
 #### Environment Security
 ```env
-# Use strong secrets (32+ characters)
 NEXTAUTH_SECRET="your-super-long-cryptographically-secure-secret"
-
-# Database SSL in production
 DATABASE_URL="postgresql://user:pass@host:5432/db?sslmode=require"
-
-# API key rotation
 GEMINI_API_KEY="your-rotated-api-key"
 ```
 
 #### Input Validation
 ```typescript
-// Use Zod for robust input validation
 import { z } from 'zod'
 
 const cognitiveDataSchema = z.object({
@@ -1140,7 +1012,6 @@ const cognitiveDataSchema = z.object({
   gameResults: z.object({
     accuracy: z.number().min(0).max(1),
     averageResponseTime: z.number().min(0),
-    // ... other fields
   })
 })
 
@@ -1154,20 +1025,17 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   }
-  
-  // Process validated data
 }
 ```
 
 #### Authentication Security
 ```typescript
-// Implement session security
 export const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60, // 24 hours
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
   },
   jwt: {
     maxAge: 30 * 24 * 60 * 60,
@@ -1188,13 +1056,11 @@ export const authOptions: NextAuthOptions = {
 
 #### Data Protection
 ```typescript
-// Implement data anonymization for analytics
 export function anonymizeUserData(userData: any) {
   return {
-    userId: hashUserId(userData.userId), // One-way hash
+    userId: hashUserId(userData.userId),
     cognitiveMetrics: userData.cognitiveMetrics,
     learningProgress: userData.learningProgress,
-    // Remove personally identifiable information
     createdAt: userData.createdAt
   }
 }
@@ -1206,7 +1072,6 @@ export function anonymizeUserData(userData: any) {
 
 #### Error Tracking
 ```typescript
-// Implement error boundary for graceful error handling
 import { ErrorBoundary } from 'react-error-boundary'
 
 function ErrorFallback({error, resetErrorBoundary}) {
@@ -1230,9 +1095,7 @@ export function App() {
 
 #### Performance Monitoring
 ```typescript
-// Track cognitive test performance
 export function trackCognitivePerformance(testType: string, metrics: any) {
-  // Send to analytics service
   analytics.track('Cognitive Test Completed', {
     testType,
     duration: metrics.duration,
@@ -1244,13 +1107,10 @@ export function trackCognitivePerformance(testType: string, metrics: any) {
 
 #### Health Checks
 ```typescript
-// API health check endpoint
 export async function GET() {
   try {
-    // Check database connection
     await prisma.$queryRaw`SELECT 1`
     
-    // Check AI service
     const aiHealth = await checkGeminiHealth()
     
     return NextResponse.json({
@@ -1295,7 +1155,6 @@ We welcome contributions from the community! Here's how you can help make Synaps
    ```bash
    npm install
    cp .env.example .env.local
-   # Configure your environment variables
    npx prisma db push
    npm run dev
    ```
@@ -1316,11 +1175,7 @@ We welcome contributions from the community! Here's how you can help make Synaps
 
 #### Testing
 ```bash
-# Run tests before submitting
 npm run test
-
-# Add tests for new features
-# Test files should be named: *.test.tsx or *.test.ts
 ```
 
 #### Pull Request Process
@@ -1401,7 +1256,5 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 ### 🎓 Happy Learning with Synapse Platform! 
 
 **Made with ❤️ by the Synapse Team**
-
-[Website](https://synapse-platform.com) • [Documentation](https://docs.synapse-platform.com) • [Discord](https://discord.gg/synapse) • [Twitter](https://twitter.com/synapse_platform)
 
 </div>
