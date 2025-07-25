@@ -132,43 +132,47 @@ export default function ResourcesPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+    <div className="container mx-auto py-6 sm:py-8 space-y-6 sm:space-y-8 px-4 sm:px-6">
+      <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <BookOpen className="h-8 w-8 text-primary" />
+          <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+            <BookOpen className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
             Learning Resources
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground mt-2 text-sm sm:text-base">
             Discover curated educational content tailored to your learning journey
           </p>
         </div>
       </div>
 
       {/* Search and AI Generation */}
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 lg:grid-cols-2">
         {/* External API Search */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Search className="h-5 w-5" />
+          <CardHeader className="pb-3 sm:pb-4">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Search className="h-4 w-4 sm:h-5 sm:w-5" />
               Search Learning Resources
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex gap-2">
+          <CardContent className="space-y-3 sm:space-y-4">
+            <div className="flex flex-col sm:flex-row gap-2">
               <Input
                 placeholder="Search books, articles, cultural items..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                className="flex-1"
+                className="flex-1 text-sm sm:text-base"
               />
-              <Button onClick={handleSearch} disabled={loading || !searchQuery.trim()}>
+              <Button 
+                onClick={handleSearch} 
+                disabled={loading || !searchQuery.trim()}
+                className="w-full sm:w-auto text-sm sm:text-base px-4 sm:px-6"
+              >
                 {loading ? "Searching..." : "Search"}
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Search across Open Library, Europeana cultural heritage, and trivia databases
             </p>
           </CardContent>
@@ -176,25 +180,26 @@ export default function ResourcesPage() {
 
         {/* AI Content Generation */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brain className="h-5 w-5" />
+          <CardHeader className="pb-3 sm:pb-4">
+            <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
+              <Brain className="h-4 w-4 sm:h-5 sm:w-5" />
               AI Content Generator
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4">
             <Input
               placeholder="Topic to learn about..."
               value={aiQuery}
               onChange={(e) => setAiQuery(e.target.value)}
+              className="text-sm sm:text-base"
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div className="space-y-1">
-                <Label className="text-xs">Subject</Label>
+                <Label className="text-xs sm:text-sm">Subject</Label>
                 <select
                   value={aiSubject}
                   onChange={(e) => setAiSubject(e.target.value)}
-                  className="w-full p-2 text-sm border rounded-md"
+                  className="w-full p-2 text-xs sm:text-sm border rounded-md"
                 >
                   <option value="Science">Science</option>
                   <option value="History">History</option>
@@ -232,14 +237,14 @@ export default function ResourcesPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Resources</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-xs sm:text-sm font-medium">Total Resources</CardTitle>
+            <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{quickStats.totalResources}</div>
+            <div className="text-lg sm:text-2xl font-bold">{quickStats.totalResources}</div>
           </CardContent>
         </Card>
 
@@ -304,14 +309,14 @@ export default function ResourcesPage() {
       </div>
 
       {/* Resource Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {loading && (
           <>
             {[...Array(6)].map((_, i) => (
-              <Card key={i} className="h-64 animate-pulse">
+              <Card key={i} className="h-48 sm:h-64 animate-pulse">
                 <CardHeader>
-                  <div className="h-4 bg-muted rounded w-3/4"></div>
-                  <div className="h-3 bg-muted rounded w-1/2 mt-2"></div>
+                  <div className="h-3 sm:h-4 bg-muted rounded w-3/4"></div>
+                  <div className="h-2 sm:h-3 bg-muted rounded w-1/2 mt-2"></div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-2">

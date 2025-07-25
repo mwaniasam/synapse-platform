@@ -11,6 +11,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Synapse Platform - Adaptive Learning',
   description: 'An intelligent learning platform with cognitive detection and personalized content delivery',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 }
 
 export default function RootLayout({

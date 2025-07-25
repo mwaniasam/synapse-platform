@@ -62,36 +62,36 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
-      <div className="container mx-auto py-12 space-y-12">
+      <div className="container mx-auto py-6 sm:py-8 lg:py-12 space-y-6 sm:space-y-8 lg:space-y-12 px-4 sm:px-6">
       {/* Welcome Section */}
-        <div className="glass-card rounded-3xl p-8 border-0 shadow-2xl">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div className="space-y-4">
+        <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border-0 shadow-2xl">
+          <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+            <div className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
-                  <Sparkles className="h-6 w-6 text-primary" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-2xl flex items-center justify-center">
+                  <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </div>
                 <div>
-                  <h1 className="text-4xl font-bold gradient-text">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold gradient-text leading-tight">
                     Welcome back, {session.user?.name || 'Learner'}!
                   </h1>
-                  <p className="text-muted-foreground text-lg">
+                  <p className="text-muted-foreground text-sm sm:text-base lg:text-lg">
                     Ready to continue your learning journey?
                   </p>
                 </div>
               </div>
             </div>
             
-            <div className="flex gap-4 mt-6 md:mt-0">
-              <Button size="lg" className="px-6 py-3 rounded-2xl glow-effect hover:scale-105 transition-all duration-300" asChild>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <Button size="lg" className="px-4 sm:px-6 py-3 rounded-xl sm:rounded-2xl glow-effect hover:scale-105 transition-all duration-300 text-sm sm:text-base" asChild>
                 <Link href="/app/pomodoro">
-                  <Timer className="h-5 w-5 mr-2" />
+                  <Timer className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Start Session
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="px-6 py-3 rounded-2xl border-2 hover:scale-105 transition-all duration-300" asChild>
+              <Button variant="outline" size="lg" className="px-4 sm:px-6 py-3 rounded-xl sm:rounded-2xl border-2 hover:scale-105 transition-all duration-300 text-sm sm:text-base" asChild>
                 <Link href="/app/resources">
-                  <BookOpen className="h-5 w-5 mr-2" />
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Browse Resources
                 </Link>
               </Button>
@@ -100,9 +100,9 @@ export default function Dashboard() {
         </div>
 
         {/* Cognitive State Section */}
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Brain className="h-6 w-6 text-primary" />
+        <div className="space-y-4 sm:space-y-6">
+          <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+            <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
             Your Cognitive State
           </h2>
           <CognitiveStateIndicator showDetails={true} />
@@ -111,13 +111,13 @@ export default function Dashboard() {
       {/* Stats Cards */}
       <StatsCards stats={stats} />
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 lg:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {/* Daily Goal */}
           <Card className="glass-card border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3 text-xl">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
-                  <Target className="h-5 w-5 text-green-600" />
+            <CardHeader className="pb-3 sm:pb-4">
+              <CardTitle className="flex items-center gap-3 text-lg sm:text-xl">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl flex items-center justify-center">
+                  <Target className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
                 </div>
                 Today&apos;s Goal
               </CardTitle>
