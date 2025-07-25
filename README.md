@@ -137,6 +137,12 @@ NODE_ENV="development"
 
 #### Option B: Cloud Database Setup (Recommended for Production)
 
+**Using Neon (Recommended - Current Setup):**
+1. Go to [Neon](https://neon.tech/)
+2. Create a new project
+3. Copy the connection string from the dashboard
+4. Update your `DATABASE_URL` and `DIRECT_URL` in `.env.local`
+
 **Using Supabase:**
 1. Go to [Supabase](https://supabase.com/)
 2. Create a new project
@@ -243,6 +249,12 @@ DATABASE_URL="postgresql://username:password@localhost:5432/synapse_db"
 ```
 
 #### Cloud Database Examples
+
+**Neon (Currently in use and recommended Serverless PostgreSQL):**
+```env
+DATABASE_URL="postgresql://username:password@ep-host.region.aws.neon.tech/database?sslmode=require"
+DIRECT_URL="postgresql://username:password@ep-host.region.aws.neon.tech/database?sslmode=require"
+```
 
 **Supabase:**
 ```env
