@@ -37,15 +37,11 @@ Synapse Platform is a comprehensive adaptive learning ecosystem that leverages c
 - **Bookmark System**: Save and organize favorite learning resources
 - **Achievement System**: Goal setting and milestone tracking
 
-![Learning Resources Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428737/bpcnfgchyslkoe7y240k.jpg)
-
 ### ⏱️ Productivity & Focus Tools
 - **Intelligent Pomodoro Timer**: Customizable work/break intervals with cognitive optimization
 - **Focus Analytics**: Track concentration patterns and productivity metrics
 - **Session Management**: Monitor work sessions with detailed performance insights
 - **Adaptive Break Recommendations**: AI-suggested break durations based on cognitive load
-
-![Pomodoro Timer Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428843/o8qpwi0smtgb0ll1aecb.jpg)
 
 ### 🗺️ Knowledge Mapping & Visualization
 - **Interactive Knowledge Graph**: Visual representation of learning connections and dependencies
@@ -65,31 +61,7 @@ Synapse Platform is a comprehensive adaptive learning ecosystem that leverages c
 - **Predictive Learning Insights**: AI-powered recommendations for optimal learning strategies
 - **Export & Reporting**: Detailed reports on learning progress and achievements
 
-## 🖼️ Screenshots
-
-### Key Interface Screenshots
-
-#### Dashboard Overview
-![Learning Dashboard](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428667/nmpvgfb01xdcrxiqy6qg.jpg)
-
-#### Cognitive Assessment Interface  
-![Cognitive Assessment Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428792/jkhonstcltubxg1ys95i.jpg)
-
-#### Learning Resources Library
-![Learning Resources Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428737/bpcnfgchyslkoe7y240k.jpg)
-
-#### Pomodoro Timer & Productivity Tools
-![Pomodoro Timer Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428843/o8qpwi0smtgb0ll1aecb.jpg)
-
-### 🎯 Key Features Demonstrated
-- ✅ Responsive mobile-first design with hamburger navigation
-- ✅ Real-time cognitive assessment and monitoring
-- ✅ AI-powered content generation and personalization
-- ✅ Comprehensive learning resource management
-- ✅ Advanced productivity tools and analytics
-- ✅ Secure user authentication and profile management
-
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -345,8 +317,6 @@ ENABLE_ANALYTICS="true"
 - **Adaptive Content Delivery**: Learning materials adjust based on cognitive state
 - **Personalized Recommendations**: AI-driven suggestions for optimal learning strategies
 
-![Cognitive Assessment Interface](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428792/jkhonstcltubxg1ys95i.jpg)
-
 ### 2. 🤖 AI-Powered Content Generation & Personalization
 - **Google Gemini Integration**: Advanced AI for dynamic educational content creation
 - **Intelligent Content Adaptation**: Materials tailored to individual skill levels and preferences
@@ -388,8 +358,6 @@ ENABLE_ANALYTICS="true"
 - **Predictive Learning Analytics**: AI-powered insights for optimal learning strategies and timing
 - **Progress Reports & Exports**: Detailed reports on learning progress, achievements, and performance
 - **Data-driven Recommendations**: Personalized suggestions based on learning patterns and performance
-
-![Learning Dashboard](https://res.cloudinary.com/dtjjgiitl/image/upload/v1753428667/nmpvgfb01xdcrxiqy6qg.jpg)
 
 ## 🚀 Deployment
 
