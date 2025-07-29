@@ -20,7 +20,8 @@ import {
   Trash2,
   LogOut,
   Save,
-  AlertTriangle
+  AlertTriangle,
+  Timer
 } from "lucide-react"
 
 export default function SettingsPage() {
@@ -42,6 +43,15 @@ export default function SettingsPage() {
       language: "en",
       studyGoal: "30",
       difficulty: "intermediate"
+    },
+    pomodoro: {
+      workDuration: 25,
+      shortBreakDuration: 5,
+      longBreakDuration: 15,
+      sessionsUntilLongBreak: 4,
+      autoStartBreaks: true,
+      autoStartWork: false,
+      enableNotifications: true
     }
   })
 
@@ -375,6 +385,136 @@ export default function SettingsPage() {
                     <SelectItem value="de">German</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Pomodoro Timer Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Timer className="h-5 w-5" />
+              Pomodoro Timer Settings
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <Label>Work Duration (minutes)</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="60"
+                  value={settings.pomodoro.workDuration}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      pomodoro: { ...settings.pomodoro, workDuration: parseInt(e.target.value) || 25 }
+                    })
+                  }
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label>Short Break Duration (minutes)</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="30"
+                  value={settings.pomodoro.shortBreakDuration}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      pomodoro: { ...settings.pomodoro, shortBreakDuration: parseInt(e.target.value) || 5 }
+                    })
+                  }
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label>Long Break Duration (minutes)</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="60"
+                  value={settings.pomodoro.longBreakDuration}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      pomodoro: { ...settings.pomodoro, longBreakDuration: parseInt(e.target.value) || 15 }
+                    })
+                  }
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label>Sessions Until Long Break</Label>
+                <Input
+                  type="number"
+                  min="2"
+                  max="10"
+                  value={settings.pomodoro.sessionsUntilLongBreak}
+                  onChange={(e) =>
+                    setSettings({
+                      ...settings,
+                      pomodoro: { ...settings.pomodoro, sessionsUntilLongBreak: parseInt(e.target.value) || 4 }
+                    })
+                  }
+                  className="mt-2"
+                />
+              </div>
+            </div>
+            
+            <Separator />
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Auto-start Breaks</Label>
+                  <p className="text-sm text-muted-foreground">Automatically start breaks when work session ends</p>
+                </div>
+                <Switch
+                  checked={settings.pomodoro.autoStartBreaks}
+                  onCheckedChange={(checked) =>
+                    setSettings({
+                      ...settings,
+                      pomodoro: { ...settings.pomodoro, autoStartBreaks: checked }
+                    })
+                  }
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Auto-start Work Sessions</Label>
+                  <p className="text-sm text-muted-foreground">Automatically start work sessions when break ends</p>
+                </div>
+                <Switch
+                  checked={settings.pomodoro.autoStartWork}
+                  onCheckedChange={(checked) =>
+                    setSettings({
+                      ...settings,
+                      pomodoro: { ...settings.pomodoro, autoStartWork: checked }
+                    })
+                  }
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Timer Notifications</Label>
+                  <p className="text-sm text-muted-foreground">Show notifications when timer completes</p>
+                </div>
+                <Switch
+                  checked={settings.pomodoro.enableNotifications}
+                  onCheckedChange={(checked) =>
+                    setSettings({
+                      ...settings,
+                      pomodoro: { ...settings.pomodoro, enableNotifications: checked }
+                    })
+                  }
+                />
               </div>
             </div>
           </CardContent>

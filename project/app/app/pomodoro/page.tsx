@@ -76,7 +76,7 @@ export default function PomodoroPage() {
         </div>
         
         <Button variant="outline" asChild>
-          <Link href="/app/settings">
+          <Link href="/settings">
             <Settings className="h-4 w-4 mr-2" />
             Customize Timer
           </Link>
